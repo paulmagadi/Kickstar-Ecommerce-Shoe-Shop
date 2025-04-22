@@ -1,0 +1,72 @@
+{% if products.paginator.num_pages > 1 %}
+<div class="pagination">
+    <div class="step-links">
+        {% if products.has_previous %}
+        <a href="?page=1" title="First"><div class="pagination-btn"><i class="ri-skip-left-line"></i></div></a>
+        <a href="?page={{ products.previous_page_number }}" title="Previous"><div class="next-page pagination-btn"><i class="ri-arrow-left-s-line"></i></div></a>
+        {% endif %}
+
+        <div class="pagination-pages">
+            Page <span class="current-page">{{ products.number }}</span> of {{ products.paginator.num_pages }} 
+        </div>
+
+        {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}" title="Next"><div class="pagination-btn"><i class="ri-arrow-right-s-line"></i></div></a>
+        <a href="?page={{ products.paginator.num_pages }}" title="Last"><div class="pagination-btn"><i class="ri-skip-right-line"></i></div></a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+
+<style>
+    .pagination {
+        padding: 1em;
+    }
+
+    .pagination a {
+        color: var(--neutral-dark-color) !important;
+    }
+
+    .pagination a:hover {
+        text-decoration: none !important;
+        color: var(--primary-color) !important;
+    }
+
+    .pagination i {
+        font-size: 1.3rem;
+    }
+
+    .step-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .pagination-btn {
+        border: 1px solid var(--background-color);
+        padding: .5em 1em;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .pagination-pages {
+        border: 1px solid var(--background-color);
+        padding: .5em 1em;
+        border-radius: 4px;
+        pointer-events: none;
+        user-select: none;
+        font-size: 1.1rem;
+    }
+
+    .current-page {
+        color: var(--primary-color);
+    }
+
+    .pagination-btn:hover {
+        border: 1px solid var(--secondary-color);
+    }
+
+    
+</style>

@@ -1,0 +1,73 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+
+<section class="cart-section">
+    {% include 'store/partials/breadcrumbs.html' %}
+    <div class="cart-elements-container">
+        {% if cart_items %}
+        <div class="cart-element-header">
+            <div class="cart-item-image"></div>
+            <div class="cart-item-name"><p>Item</p></div>
+            <div class="cart-item-quantity"><p>Quantity</p></div>
+            <div class="cart-item-price"><p>Price</p></div>
+            <div class="cart-item-total"><p>Total</p></div>
+            <div class="cart-item-remove"></div>
+        </div>
+
+        {% for item in cart_items %}
+        <div class="cart-element">
+            <div class="cart-item-image">
+                <a href="{% url 'product' item.slug %}">
+                    <img src="{{ item.imageURL }}" alt="{{ item.name }}">
+                </a>
+            </div>
+            <div class="cart-item-name"><a href="{% url 'product' item.slug %}">{{ item.name }}</a></div>
+            <div class="cart-item-quantity">
+                <button class="reduce-quantity" data-index="{{ item.id }}">&minus;</button>
+                <span class="item-quantity" data-index="{{ item.id }}" data-stock="{{ item.stock_quantity }}">{{ item.quantity }}</span>
+                <button class="add-quantity" data-index="{{ item.id }}">&plus;</button>
+            </div>
+            <div class="cart-item-price">
+                {% if item.is_sale %}
+                <div class="cart-item-price">$ {{item.sale_price}}</div>
+                {% else %}
+                <div class="cart-item-price">$ {{item.price}}</div>
+                {% endif %}
+            </div>
+            <div class="cart-item-total">${{ item.total_price }}</div>
+            <div class="cart-item-remove">
+                <button class="remove-item" data-index="{{ item.id }}">Remove</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="cart-totals">
+            <h3>Items: <strong>{{ total_quantity }}</strong></h3>
+            <h3>Total: <strong>$ {{ order_total }}</strong></h3>
+            <button class="checkout-btn"><a href="{% url 'checkout' %}">Proceed to Checkout</a></button>
+        </div>
+
+        {% else %}
+        <div class="empty-cart">
+            <h1>Your cart is empty<br>
+                <a href="{% url 'home' %}">Continue Shopping →</a>
+            </h1>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% if viewed_products %}
+    <section>
+        <div class="section-header">
+            <div class="section-title">Recently Viewed Products</div>
+            <div class="section-view-more"><a href="{% url 'viewed_products' %}" title="View more items">View more</a>
+            </div>
+        </div>
+        {% include 'store/partials/scroll-section.html' with product_list=viewed_products %}
+    </section>
+    {% endif %}
+
+{% endblock content %}

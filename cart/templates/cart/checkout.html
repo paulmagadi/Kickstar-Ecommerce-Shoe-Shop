@@ -1,0 +1,137 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Checkout
+{% endblock title %}
+
+{% block content %}
+<section>
+    {% include 'store/partials/breadcrumbs.html' %}
+</section>
+{% if cart_items %}
+<div class="checkout-container">
+
+    <div class="order-summary">
+        <div class="cart-elements-container">
+            <h1>Order Summary</h1>
+            <hr>
+            <div class="cart-element">
+                {% for item in cart_items %}
+                <div class="cart-item-image"><img src="{{ item.imageURL }}" alt="" width="60%"></div>
+                <div class="cart-item-name">{{ item.name }}</div>
+                <div class="cart-item-price">x</div>
+                <div class="cart-item-quantity">
+                    <p>{{ item.quantity }}</p>
+                </div>
+                <div class="cart-item-total">$ {{ item.total_price }}</div>
+                <div class="cart-item-remove"></div>
+                {% endfor %}
+            </div>
+            <p>Items: {{ total_quantity }}</p>
+            <p>Amount: ${{ order_total }}</p>
+        </div>
+    </div>
+    <div class="customer-information">
+        <div class="shipping-information">
+            <h1>Shipping Information</h1>
+
+            {% if shipping_address %}
+            <p><strong>Full Name:</strong> {{ shipping_address.full_name }}</p>
+            <p><strong>Email:</strong> {{ shipping_address.email }}</p>
+            <p><strong>Phone:</strong> {{ shipping_address.phone }}</p>
+            <p><strong>Address 1:</strong> {{ shipping_address.address1 }}</p>
+            {% if shipping_address.address2 %}
+            <p><strong>Address 2:</strong> {{ shipping_address.address2 }}</p>
+            {% endif %}
+            <p><strong>City:</strong> {{ shipping_address.city }}</p>
+            <p><strong>State:</strong> {{ shipping_address.state }}</p>
+            <p><strong>Zip Code:</strong> {{ shipping_address.zipcode }}</p>
+            <p><strong>Country:</strong> {{ shipping_address.country }}</p>
+
+            <a href="{% url 'shipping_address' %}?next={{ request.path }}" class="btn">Edit Address</a>
+            {% else %}
+            <p>You have no shipping address on file.</p>
+            <a href="{% url 'shipping_address' %}?next={{ request.path }}" class="btn">Add Address</a>
+            {% endif %}
+        </div>
+        <br><br><br>
+        <!-- Order Now Button -->
+        <form method="POST" action="{% url 'create_order' %}">
+            {% csrf_token %}
+            <input type="hidden" name="order_total" value="{{ order_total }}">
+            <button type="submit" class="btn btn-success">Order Now</button>
+        </form>
+
+
+        <br><br><br>
+
+    </div>
+
+</div>
+{% else %}
+<h1>You have no items in your cart... <a href="{% url 'home' %}">Continue shopping</a></h1>
+{% endif %}
+
+
+
+{% endblock content %}
+
+
+<style>
+    .checkout-container {
+        display: flex;
+        width: 100%;
+        margin: 0 auto;
+        justify-content: space-between;
+        background-color: aliceblue;
+    }
+
+    .customer-information,
+    .order-summary {
+        width: 50%;
+        box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+        padding: 1em;
+    }
+
+
+
+    .customer-information input {
+        width: 100%;
+        padding: .5em 1em;
+        margin-top: 1em;
+        margin-right: 1em;
+    }
+
+    .customer-information input[type='submit'] {
+        width: 100%;
+        background-color: orange;
+        outline: none;
+        border: none;
+    }
+
+    .back-to-cart {
+        padding-bottom: .5em;
+    }
+
+    .back-to-cart button {
+        padding: .5em .8em;
+    }
+
+
+
+    @media (max-width: 600px) {
+        .checkout-container {
+            width: 100%;
+            display: block;
+        }
+
+        .customer-information,
+        .order-summary {
+            width: 100%;
+        }
+
+        .shipping-information {
+            margin-bottom: 2em;
+        }
+    }
+</style>

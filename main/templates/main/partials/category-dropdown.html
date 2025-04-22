@@ -1,0 +1,19 @@
+
+<li>
+    {% if category.children.exists %}
+    <a href="{% url 'category' category.slug %}" class="make-heading">{{ category.name }}</a> 
+    {% else %}
+    <a href="{% url 'category' category.slug %}">{{ category.name }}</a>
+    {% endif %}
+
+    {% if category.children.exists %}
+        <ul>
+            {% for child in category.children.all %}
+                {% include 'main/partials/category-item.html' with category=child %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
+
+
+

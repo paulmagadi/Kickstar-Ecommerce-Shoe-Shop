@@ -1,0 +1,54 @@
+{% extends 'main/base.html' %}
+{% load custom_tags %}
+
+{% block content %}
+{% include 'store/partials/breadcrumbs.html' %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Shop our Categories</div>
+    </div>
+</section>
+
+<section class="categories-section">
+    {% for category in categories %}
+    <div class="category-item-container">
+        <a href="{% url 'category' category.slug %}">
+            <img src="{{ category.imageURL }}" alt="{{ category.name }}" width="50%">
+        </a>
+        <p>{% for ancestor in category.get_ancestors %}
+            {{ ancestor.name }} &gt;
+            {% endfor %}
+            {{ category.name }}
+        </p>
+
+        {% if category.description %}
+        <p>{{category.description}}</p>
+        {% endif %}
+        <br>
+
+        <div class="section-title">
+            {% with discount=category_discounts|get_item:category.id %}
+            {% if discount > 0 %}
+            Get Up to <span style="color:red;">{{ discount }}%</span> Off
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<style>
+    .categories-section {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1em;
+    }
+
+    .category-item-container {
+        width: 47%;
+    }
+</style>
+
+
+{% endblock content %}

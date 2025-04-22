@@ -1,0 +1,223 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+{% include 'store/partials/breadcrumbs.html' %}
+
+<div class="user-account-page">
+
+    <div class="account-sidebar">
+        {% include 'users/partials/account-sidebar.html' %}
+    </div>
+
+    <div class="account-main-section">
+        <div class="account-preview-item">
+            <div class="account-preview-item-heading">
+                <h3>Profile Details</h3>
+                <p><a href="{% url 'update_user' %}" title="Update User">Edit <i class="ri-pencil-line"></i></a></p>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <div>
+                <h4>{{user.first_name|capfirst}} {{user.last_name|capfirst}}</h4>
+                <p>{{user.email}}</p>
+                {% if billing_address %}
+                <p>{{user.billing_address.phone}}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="account-preview-item">
+            <div class="account-preview-item-heading">
+                <h3>Billing Address</h3>
+                <p><a href="{% url 'update_billing' %}" title="Update billing address">Edit <i
+                            class="ri-pencil-line"></i></a></p>
+            </div>
+            <br>
+            <hr>
+            <p>Note: This is your permanent and official address. You can use it as a shipping address.</p>
+            <br>
+            <div class="billing-address">
+                {% if billing_address %}
+                <p><strong>Phone </strong>{{user.billing_address.phone}}</p>
+                <p><strong>Address: </strong>{{user.billing_address.address1}}</p>
+                <p><strong>Alternatuve Address: </strong>{{user.billing_address.address2}}</p>
+                <p><strong>City: </strong>{{user.billing_address.city}}</p>
+                <p><strong>State: </strong>{{user.billing_address.state}}</p>
+                <p><strong>zipcode: </strong>{{user.billing_address.zipcode}}</p>
+                <p><strong>Country: </strong>{{user.billing_address.country}}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="account-preview-item">
+            <div class="account-preview-item-heading">
+                <h3>Shipping Address</h3>
+                {% if shipping_address %}
+                <p><a href="{% url 'shipping_address' %}" title="Update shipping address">Edit <i
+                    class="ri-pencil-line"></i></a></p>
+                {% else %}
+                <p><a href="{% url 'shipping_address' %}" title="Add shipping address">Add <i
+                    class="ri-pencil-line"></i></a></p>
+                {% endif %}
+
+            </div>
+            <br>
+            <hr>
+            <br>
+            <p>Note: Use if you are shipping to a different address from your permanent address.</p>
+            <br>
+            <div class="shipping-address">
+
+                {% if shipping_address %}
+                <p><strong>Address: </strong>{{shipping_address.address1}}</p>
+                <p><strong>Alternatuve Address: </strong>{{shipping_address.address2}}</p>
+                <p><strong>City: </strong>{{shipping_address.city}}</p>
+                <p><strong>State: </strong>{{shipping_address.state}}</p>
+                <p><strong>zipcode: </strong>{{shipping_address.zipcode}}</p>
+                <p><strong>Country: </strong>{{shipping_address.country}}</p>
+                {% else %}
+                
+                <div class="no-shipping-address">
+                You have not added a shipping address
+                <br><br>
+                    <a href="{% url 'shipping_address' %}" title="Add shipping address"> <svg xmlns="http://www.w3.org/2000/svg" height="44px"
+                        viewBox="0 -960 960 960" width="44px" fill="#1f1f1f">
+                        <path
+                            d="M440-400h80v-120h120v-80H520v-120h-80v120H320v80h120v120Zm40 214q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
+                    </svg></a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="account-preview-item">
+            <h3>Newsletter</h3>
+            <hr>
+            <div>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio, dignissimos?</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .user-account-page {
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+        margin: 1em;
+        flex-wrap: wrap;
+    }
+
+    .account-sidebar {
+        width: 22%;
+        padding: 1em;
+        border: 1px solid var(--background-color);
+        border-radius: 8px;
+    }
+
+    .account-main-section {
+        width: 76%;
+        border: 1px solid var(--background-color);
+        border-radius: 8px;
+        display: flex;
+        gap: 1em;
+        flex-wrap: wrap;
+    }
+
+    .account-preview-item {
+        width: 45%;
+        padding: 1em;
+        border: 1px solid var(--background-color);
+        border-radius: 6px;
+        margin: 1em;
+    }
+
+    .account-preview-item-heading {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .billing-address {
+        color: var(--gray-color);
+    }
+
+    .billing-address strong,
+    .shipping-address strong {
+        font-weight: 800;
+        color: var(--neutral-dark-color);
+    }
+
+    .no-shipping-address {
+        text-align: center;
+    }
+
+    .no-shipping-address svg {
+        fill: var(--secondary-color);
+    }
+
+    .no-shipping-address svg:hover {
+        fill: var(--primary-color);
+    }
+
+    
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imageInput = document.getElementById("imageInput");
+        const modal = document.getElementById("uploadModal");
+        const preview = document.getElementById("imagePreview");
+        const profilePreview = document.getElementById("profilePreview");
+        const uploadForm = document.getElementById("uploadForm");
+
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                modal.style.display = "flex";
+
+                // Store the file directly in the form via JS
+                const formData = new FormData();
+                formData.append("profile_image", file);
+                formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+                uploadForm.onsubmit = function (e) {
+                    e.preventDefault();
+
+                    fetch("{% url 'profile' %}", {
+                        method: "POST",
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.image_url) {
+                                profilePreview.src = data.image_url;
+                                modal.style.display = "none";
+                            } else {
+                                alert("Upload failed.");
+                            }
+                        })
+                        .catch(error => console.error("Upload error:", error));
+                };
+            }
+        });
+
+        cancelModal = document.getElementById('cancelModal');
+
+        cancelModal.addEventListener('click', () => {
+            modal.style.display = "none";
+        })
+    });
+
+
+</script>
+
+
+
+
+{% endblock content %}

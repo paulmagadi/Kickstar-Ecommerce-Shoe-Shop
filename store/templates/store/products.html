@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+
+{% block content %}
+{% include 'store/partials/breadcrumbs.html' %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Produt Catalog | {{products_count}} Items</div>
+    </div>
+    <div class="product-cards-container">
+        {% if products %}
+        {% for product in products %}
+        {% include 'store/product-card.html' %}
+        {% endfor %}
+
+        {% else %}
+        <p>There is no product in Store</p>
+        <p>There is no products left in Store. More products will be listed soon.</p>
+        <p>For more information go to the store.</p>
+        <a href="{% url 'home' %}"><Button>Home</Button></a>
+        {% endif %}
+    </div>
+    {% include 'store/partials/pagination.html' %}
+</section>
+
+{% endblock content %}

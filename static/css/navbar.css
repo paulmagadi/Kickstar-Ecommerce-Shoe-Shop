@@ -1,0 +1,251 @@
+:root {
+    --primary-color: #fd3008;
+    --secondary-color: #00a896;
+    --neutral-light-color: #f8f9fa;
+    --neutral-dark-color: #2d2d2d;
+    --accent-color: #ffd166;
+}
+
+header {
+    margin: 0 auto;
+    top: 0;
+    position: fixed;
+    width: 100%;
+    max-width: 1400px;
+    height: 6em;
+    z-index: 100;
+    background-color: var(--neutral-light-color);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .3em 2em .1em 2em;
+    height: 3.5em;
+    /* background-color: var(--background-color); */
+}
+
+.header .search-bar {
+    position: relative;
+}
+
+.header .search-bar input {
+    padding: .5em 1em;
+    border-radius: 8px;
+}
+
+.header .search-bar input[type=search] {
+    width: 400px;
+    border: 1px solid var(--neutral-dark-color);
+    outline: none;
+    color: var(--neutral-dark-color);
+    padding-left: 2em;
+}
+
+.header .search-bar .ri-search-line {
+    position: absolute;
+    left: 1em;
+    top: 20%;
+    transform: translate(-50%);
+    color: var(--gray-shade-color);
+    font-size: 1rem;
+}
+
+.header .search-bar input[type=submit] {
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--neutral-light-color);
+    border: none;
+    border: 1px solid;
+}
+
+.header .navigation {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.header .navigation i {
+    font-size: 1.5rem;
+    color: var(--neutral-dark-color);
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}
+
+.header .account {
+    position: relative;
+    z-index: 110;
+}
+
+.header .account-dropdown {
+    position: absolute;
+    padding: 1em;
+    left: 50%;
+    translate: -50% 0;
+    background-color: var(--white-color);
+    border-radius: 8px;
+    display: none;
+}
+
+.header .account-dropdown p {
+    padding: .5em;
+}
+
+.header .account-dropdown p a {
+    color: var(--neutral-dark-color);
+}
+
+.header .account-dropdown p a:hover {
+    text-decoration: underline;
+    color: var(--secondary-color);
+}
+
+.header.account i:hover {
+    color: var(--secondary-color);
+}
+
+.header .account:hover .account-dropdown {
+    display: block;
+}
+
+.header .account-initials {
+    width: 33px;
+    height: 33px;
+    background-color: var(--white-color);
+    color: var(--neutral-dark-color);
+    font-weight: bold;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-transform: uppercase;
+}
+
+.header .cart .ri-shopping-cart-fill {
+    position: relative;
+    text-decoration: none;
+}
+
+.header .cart a {
+    text-decoration: none;
+}
+
+.header .cart-count {
+    position: absolute;
+    padding: 3px 7px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    right: 20px;
+    top: 5px;
+    color: var(--neutral-light-color);
+}
+
+.nav-list-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--background-color);
+    height: 2.5em;
+    white-space: nowrap;
+}
+
+.nav-list-container {
+    width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.nav-list-container::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-item-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.nav-categories-menu {
+    position: realtive;
+    margin-top: 5px;
+    padding: .3em 1em;
+    flex: 0 0 auto;
+    list-style: none;
+}
+
+.categories-dropdown {
+    display: none;
+    position: fixed;
+    background: rgb(255, 255, 255);
+    border: 1px solid #ddd;
+    min-width: 200px;
+    max-width: 100vw;
+    padding: 2em;
+    z-index: 1000;
+}
+
+.nav-categories-menu:hover>.categories-dropdown {
+    display: block;
+}
+
+.category-tree {
+    display: flex;
+    gap: 2em;
+}
+
+.category-tree,
+.category-tree ul {
+    padding-left: 1em;
+}
+
+.category-tree ul {
+    list-style-type: square;
+}
+
+.category-tree li {
+    margin: 0.3em 0;
+}
+
+.category-tree a {
+    text-decoration: none;
+    color: var(--neutral-dark-color);
+    font-weight: 500;
+}
+
+.nav-brand-item {
+    margin-top: 5px;
+    padding: .3em 1em;
+    flex: 0 0 auto;
+    list-style: none;
+}
+
+.nav-brand-item a {
+    text-decoration: none;
+    color: var(--neutral-dark-color);
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--secondary-color);
+}
+
+
+nav .scroll-btn {
+    width: 2em;
+    height: 100%;
+    border-radius: 0;
+    font-size: 1rem;
+}
+
+.header-after {
+    content: "";
+    margin-top: 6em;
+}

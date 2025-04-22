@@ -1,0 +1,228 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Shoe Store Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- Sidebar -->
+    {% include 'myadmin/partials/sidebar.html' %}
+
+    <main class="main-content">
+      {% block content %}
+
+      {% endblock content %}
+      <br><br>
+    </main>
+  </div>
+</body>
+
+</html>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+  }
+
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+
+  .sidebar {
+    width: 200px;
+    background: #2c3e50;
+    color: white;
+    height: 100vh;
+    padding: 20px 0;
+    position: fixed;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .sidebar ul li {
+    padding: 15px 20px;
+    display: flex;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .sidebar ul a {
+    color: white;
+    text-decoration: none;
+  }
+
+
+  .sidebar ul li:hover {
+    background: #34495e;
+  }
+
+  .sidebar .nav-text {
+    display: inline;
+    transition: opacity 0.3s;
+  }
+
+  .sidebar.collapsed {
+    width: 60px;
+  }
+
+  .sidebar.collapsed .nav-text {
+    display: none;
+  }
+
+  #toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    margin: 10px 15px;
+    cursor: pointer;
+  }
+
+  .admin-active-sidebar {
+    background-color: #f4f4f4;
+    color: #34495e;
+  }
+
+  .admin-active-sidebar:hover {
+    background-color: #f4f4f4 !important;
+    color: #34495e !important;
+  }
+
+  main {
+    margin-left: 200px;
+    transition: margin-left 0.3s;
+  }
+
+  main.expanded {
+    margin-left: 60px;
+  }
+
+
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+
+  .topbar {
+    background: #fff;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<script>
+
+  const toggleBtn = document.getElementById("toggle-btn");
+  const sidebar = document.getElementById("sidebar");
+  const main = document.querySelector(".main-content");
+
+  toggleBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("collapsed");
+    main.classList.toggle("expanded");
+  });
+
+
+  // Sales Chart (bar)
+  const salesChart = new Chart(document.getElementById("salesChart"), {
+    type: 'bar',
+    data: {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "June"],
+      datasets: [{
+        label: 'Sales ($)',
+        data: [1200, 1900, 3000, 2400, 3100, 3300],
+        backgroundColor: '#3498db'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Monthly Sales'
+        }
+      }
+    }
+  });
+
+  // Orders Chart (doughnut)
+  const ordersChart = new Chart(document.getElementById("ordersChart"), {
+    type: 'doughnut',
+    data: {
+      labels: ["Shipped", "Pending", "Delivered", "Cancelled"],
+      datasets: [{
+        label: 'Orders',
+        data: [12, 8, 25, 2],
+        backgroundColor: ['#2ecc71', '#f1c40f', '#3498db', '#e74c3c']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Order Status Breakdown'
+        }
+      }
+    }
+  });
+
+  // Daily Visits Line Chart
+  const visitsChart = new Chart(document.getElementById("visitsChart"), {
+    type: 'line',
+    data: {
+      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      datasets: [{
+        label: 'Daily Visits',
+        data: [120, 150, 170, 130, 190, 220, 200],
+        borderColor: '#8e44ad',
+        backgroundColor: 'rgba(142, 68, 173, 0.2)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#8e44ad'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Website Daily Visits'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+
+</script>

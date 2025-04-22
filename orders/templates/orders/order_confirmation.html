@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+
+{% block title %} Order Confirmation {% endblock %}
+
+{% block content %}
+<section style="padding-top: 3.5em;">
+    
+</section>
+<h1>Thank You for Your Order!</h1>
+<p>Your order {{order.order_number}} has been successfully placed.</p>
+<p>We will contact you soon for delivery.</p>
+<a href="{% url 'home' %}" class="btn btn-primary">Continue Shopping</a>
+{% endblock %}

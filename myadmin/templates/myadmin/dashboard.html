@@ -1,0 +1,461 @@
+{% extends 'myadmin/partials/base.html' %}
+
+
+{% block content %}
+<!-- Main Content -->
+<header class="topbar">
+    <h1>Kickstar Kenya Management</h1>
+</header>
+
+<section class="cards">
+    <div class="card">
+        <h3>Total Orders</h3>
+        <p>{{orders|length}}</p>
+    </div>
+    <div class="card">
+        <h3>Total Customers</h3>
+        <p>{{customers|length}}</p>
+    </div>
+    <div class="card">
+        <h3>Products in Stock</h3>
+        <p>{{products_in_stock|length}} / {{products|length}}</p>
+    </div>
+</section>
+
+<section class="charts-section">
+    <h2>Analytics Overview</h2>
+    <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+    </div>
+</section>
+
+
+<section class="orders-section">
+    <h2>Recent Orders</h2>
+    <table class="orders-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#1001</td>
+                <td>Jane Doe</td>
+                <td><span class="status shipped">Shipped</span></td>
+                <td>$120</td>
+                <td>2025-04-15</td>
+            </tr>
+            <tr>
+                <td>#1002</td>
+                <td>John Smith</td>
+                <td><span class="status pending">Pending</span></td>
+                <td>$80</td>
+                <td>2025-04-16</td>
+            </tr>
+            <tr>
+                <td>#1003</td>
+                <td>Mary Johnson</td>
+                <td><span class="status delivered">Delivered</span></td>
+                <td>$99</td>
+                <td>2025-04-14</td>
+            </tr>
+            <tr>
+                <td>#1004</td>
+                <td>Mary Johnson</td>
+                <td><span class="status cancelled">Cancelled</span></td>
+                <td>$79</td>
+                <td>2025-05-14</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<section class="products-section">
+    <h2>Recent Product Inventory</h2>
+    <table class="products-table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#P101</td>
+                <td>Nike Air Max</td>
+                <td>Sneakers</td>
+                <td>25</td>
+                <td>$150</td>
+                <td><span class="status in-stock">In Stock</span></td>
+            </tr>
+            <tr>
+                <td>#P102</td>
+                <td>Adidas Ultraboost</td>
+                <td>Running</td>
+                <td>0</td>
+                <td>$180</td>
+                <td><span class="status out-stock">Out of Stock</span></td>
+            </tr>
+            <tr>
+                <td>#P103</td>
+                <td>Puma Suede Classic</td>
+                <td>Casual</td>
+                <td>12</td>
+                <td>$75</td>
+                <td><span class="status in-stock">In Stock</span></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<section class="customers-section">
+    <h2>Recent Customers</h2>
+    <table class="customers-table">
+        <thead>
+            <tr>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Total Orders</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#C001</td>
+                <td>Alice Green</td>
+                <td>alice@example.com</td>
+                <td>+123456789</td>
+                <td>5</td>
+                <td><span class="status active">Active</span></td>
+            </tr>
+            <tr>
+                <td>#C002</td>
+                <td>Brian King</td>
+                <td>brian@example.com</td>
+                <td>+987654321</td>
+                <td>2</td>
+                <td><span class="status inactive">Inactive</span></td>
+            </tr>
+            <tr>
+                <td>#C003</td>
+                <td>Charlotte Lee</td>
+                <td>charlotte@example.com</td>
+                <td>+112233445</td>
+                <td>8</td>
+                <td><span class="status active">Active</span></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+<style>
+
+    .cards {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        flex: 1;
+        min-width: 150px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+
+
+
+
+    .orders-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .orders-section h2 {
+        margin-bottom: 15px;
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .orders-table th {
+        background: #f4f4f4;
+    }
+
+    .status {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: white;
+    }
+
+    .status.shipped {
+        background: #3498db;
+    }
+
+    .status.pending {
+        background: #f39c12;
+    }
+
+    .status.delivered {
+        background: #2ecc71;
+    }
+
+    .status.cancelled {
+        background: #e74c3c;
+    }
+
+
+    .products-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .products-section h2 {
+        margin-bottom: 15px;
+    }
+
+    .products-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .products-table th,
+    .products-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .products-table th {
+        background: #f4f4f4;
+    }
+
+    .status.in-stock {
+        background: #2ecc71;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .status.out-stock {
+        background: #e74c3c;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+
+    .add-product-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-product-section h2 {
+        margin-bottom: 15px;
+    }
+
+    .add-product-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .form-group {
+        flex: 1 1 200px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .add-product-form button {
+        padding: 10px 20px;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .add-product-form button:hover {
+        background: #34495e;
+    }
+
+
+
+
+    .customers-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .customers-section h2 {
+        margin-bottom: 15px;
+    }
+
+    .customers-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .customers-table th,
+    .customers-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .customers-table th {
+        background: #f4f4f4;
+    }
+
+    .status.active {
+        background: #2ecc71;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .status.inactive {
+        background: #e74c3c;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+
+
+    .charts-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .charts-section h2 {
+        margin-bottom: 20px;
+    }
+
+    .chart-container {
+        margin-bottom: 30px;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    canvas {
+        width: 100% !important;
+        max-width: 600px;
+        height: auto !important;
+    }
+
+
+
+    .form-section {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 700px;
+        margin: 30px auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section h2 {
+        margin-bottom: 20px;
+    }
+
+    .product-form label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: bold;
+    }
+
+    .product-form input[type="text"],
+    .product-form input[type="number"],
+    .product-form input[type="file"],
+    .product-form input[type="email"],
+    .product-form select,
+    .product-form textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    .product-form textarea {
+        resize: vertical;
+        height: 100px;
+    }
+
+    .product-form button {
+        margin-top: 20px;
+        padding: 12px 20px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .product-form button:hover {
+        background: #2980b9;
+    }
+</style>
+{% endblock content %}

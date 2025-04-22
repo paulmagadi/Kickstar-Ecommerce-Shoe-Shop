@@ -1,0 +1,129 @@
+{% load static %}
+<div class="form-container">
+    <form action="{% url 'register' %}" method="post" class="register-form">
+        {% csrf_token %}
+        <div class="img">
+            <span id="close-signup-form" class="close"><a href="{% url 'home' %}">&times;</a></span>
+            <img src="{% static 'images/avatar.png' %}" alt="avatar" class="avatar" width="20%">
+        </div>
+
+        <div class="login-container">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </div>
+        <div class="login-container">
+            <button type="button" class="cancelbtn" id="cancel-signup-button">
+                <a href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'home' %}{% endif %}">Cancel</a>
+            <span class="password">Already have accout? <a href="{% url 'login' %}?next={{ request.GET.next }}">Login.</a></span>
+        </div>
+    </form>
+
+</div>
+
+
+<style>
+/* Form Container */
+.form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Avatar */
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 10px 0;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.close a {
+    text-decoration: none;
+    color: #333;
+}
+
+.close a:hover {
+    color: red;
+}
+
+/* Input Fields */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Register Button */
+.register-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.register-btn:hover {
+    background-color: #218838;
+}
+
+/* Cancel Button */
+.cancelbtn {
+    background-color: #dc3545;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.cancelbtn a {
+    color: white;
+    text-decoration: none;
+}
+
+.cancelbtn:hover {
+    background-color: #c82333;
+}
+
+/* Links */
+.links {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.links a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+</style>

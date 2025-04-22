@@ -1,0 +1,111 @@
+
+<section class="products-section">
+    <h2>Product Inventory</h2>
+
+    {% if products %}
+    <table class="products-table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        {% for product in products %}
+        <tbody>
+            {% if product.in_stock %}
+            {% if product.stock_quantity < 5 %}
+            <tr>
+                <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.stock_quantity}}</td>
+                <td>${{product.price}}</td>
+                <td><span class="status less-stock">In Stock</span></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.stock_quantity}}</td>
+                <td>${{product.price}}</td>
+                <td><span class="status in-stock">In Stock</span></td>
+            </tr>
+            {% endif %}
+            {% else %}
+            <tr>
+                <td>P{{product.id}}-{{product.created_at.month}}-{{product.created_at.year}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.stock_quantity}}</td>
+                <td>${{product.price}}</td>
+                <td><span class="status out-stock">Out of Stock</span></td>
+            </tr>
+            {% endif %}
+        </tbody>
+        {% endfor %}
+    </table>
+
+
+    {% endif %}
+</section>
+
+<style>
+    
+    .products-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .products-section h2 {
+        margin-bottom: 15px;
+    }
+
+    .products-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .products-table th,
+    .products-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .products-table th {
+        background: #f4f4f4;
+    }
+
+    .status.in-stock {
+        background: #13bc59;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .status.out-stock {
+        background: #e74c3c;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .status.less-stock {
+        background: #d5af5b;
+        padding: 5px 10px;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+</style>

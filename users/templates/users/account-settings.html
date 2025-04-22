@@ -1,0 +1,47 @@
+{% extends 'main/base.html' %}
+
+
+{% block content %}
+
+{% include 'store/partials/breadcrumbs.html' %}
+<div class="user-account-settings-page">
+    <div class="account-sidebar">
+        {% include 'users/partials/account-sidebar.html' %}
+    </div>
+    <div class="account-main-section">
+        <section>
+            <a href="{% url 'update_user' %}" class="login-button" id="login-button">Update User</a>
+        </section>
+        <section>
+            <a href="{% url 'password_reset' %}">RESET PASSWORD</a>
+            <a href="{% url 'update_password' %}">Change Password</a>
+        </section>
+    </div>
+</div>
+
+<style>
+    .user-account-settings-page {
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+        margin: 1em;
+        flex-wrap: wrap;
+    }
+
+    .account-sidebar {
+        width: 22%;
+        padding: 1em;
+        border: 1px solid var(--background-color);
+        border-radius: 8px;
+    }
+
+    .account-main-section {
+        width: 76%;
+        border: 1px solid var(--background-color);
+        border-radius: 8px;
+        display: flex;
+        gap: 1em;
+        flex-wrap: wrap;
+    }
+</style>
+{% endblock content %}

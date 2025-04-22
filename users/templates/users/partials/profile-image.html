@@ -1,0 +1,70 @@
+<!-- Modal -->
+<div class="profile-image-items">
+    <div id="uploadModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+background-color:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999;">
+
+        <div style="background:#fff; padding:2em; border-radius:10px; text-align:center; max-width:300px;">
+            <h3>Preview & Upload</h3>
+            <img id="imagePreview" src="" alt="Image Preview"
+                style="width:150px; height:150px; border-radius:50%; object-fit:cover; margin-bottom:1em;">
+
+            <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="profile_image" id="modalImageData">
+                <button type="submit">Upload</button>
+                <button type="button" id="cancelModal">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <div class="profile-image">
+        <img id="profilePreview" src="{{ request.user.imageURL }}" alt="Profile Image"
+            style="width:150px; height:150px; border-radius:50%; object-fit:cover;">
+        <!-- Hidden File Input Triggered by Button -->
+        <input type="file" id="imageInput" style="display:none;" accept="image/*">
+        <!-- Trigger Button -->
+        <button class="update-profile-image-btn" onclick="document.getElementById('imageInput').click()"
+            title="Update image">
+            <i class="ri-image-add-line"></i>
+        </button>
+    </div>
+
+    <h4>{{user.first_name|capfirst}} {{user.last_name|capfirst}}</h4>
+<br>
+</div>
+
+<style>
+    .profile-image-items {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .profile-image {
+        position: relative;
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .update-profile-image-btn {
+        position: absolute;
+        bottom: 0;
+        translate: -30px -20px;
+        cursor: pointer;
+        border: 1px solid var(--gray-color);
+        padding: 5px;
+        border-radius: 50%;
+        background-color: var(--neutral-light-color);
+    }
+
+    .update-profile-image-btn:hover {
+        scale: 1.05;
+    }
+
+    .ri-image-add-line {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    .update-profile-image-btn:hover .ri-image-add-line {
+        color: var(--secondary-color);
+    }
+</style>

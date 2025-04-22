@@ -1,0 +1,156 @@
+{% extends 'main/base.html' %}
+{% load custom_tags %}
+
+{% block content %}
+
+{% include 'store/partials/breadcrumbs.html' %}
+
+{% if products %} <!--  Products check begins -->
+
+{% if subcategories %} <!--  Subcategories check begins -->
+
+
+<section>
+    <div class="section-header">
+        <div class="section-title">{{ category.name|capfirst }}
+            {% if category_discounts %}
+            | Up to <span style="color:red;">{{ category_discounts|floatformat:0 }}%</span> Off
+            {% endif %}
+        </div>
+    </div>
+    <div class="category-description">
+        <img src="{{ category.imageURL}}" alt="{{ category.name }}" width="200px">
+        <p>{{ category.description }}</p>
+    </div>
+</section>
+
+<!-- 
+If there is at least 12 products in the category, display them in a paginated contaner
+Else add the deficit from the children categories, display them in a scrolling container
+If there is no product in the category (Only in the children categories), display 12 products in a scrolling container
+-->
+
+<section>
+    <div class="section-header">
+        <div class="section-title">{{ category.name|capfirst }}
+            {% if category_discounts %}
+            | Up to <span style="color:red;">{{ category_discounts|floatformat:0 }}%</span> Off
+            {% endif %}
+        </div>
+        <div class="section-view-more"><a href="{% url 'categories' %}">View other categories</a></div>
+    </div>
+    {% if direct_products %}
+        {% if direct_products|length >= 12 %}
+            <div class="product-cards-container">
+                {% for product in display_products %}
+                {% include 'store/product-card.html' %}
+                {% endfor %}
+            </div>
+            <!-- Pagination  -->
+            {% with display_products as products %}
+            {% include 'store/partials/pagination.html' %}
+            {% endwith %}
+
+        {% else %}
+            {% include 'store/partials/scroll-section.html' with product_list=display_products %}
+        {% endif %}
+    {% else %}
+    <!-- display a scrolling container of category children's products -->
+        {% include 'store/partials/scroll-section.html' with product_list=display_products %}
+    {% endif %}
+
+
+</section>
+{% endif %} <!-- end if subcategories -->
+
+
+<!------------------------------ Section End ------------------------------>
+{% if subcategories %}
+{# Loop through each subcategory #}
+{% for sub in subcategories %}
+{% with sub_products=sub.products.all|slice:":12" %}
+{% if sub_products %}
+<section class="subcategory-section">
+    <div class="section-header">
+        <div class="section-title">
+            {% for ancestor in sub.get_ancestors %}{{ ancestor.name }} > {% endfor %}
+            {{ sub.name }}
+            {% with discount=descendant_category_discounts|get_item:sub.id %}
+            {% if discount %}
+            | Up to <strong style="color:red;">{{ discount }}%</strong> Off
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="section-view-more">
+            <a href="{% url 'category' sub.slug %}" class="view-more-link">View all</a>
+        </div>
+    </div>
+
+    {% include 'store/partials/scroll-section.html' with product_list=sub_products %}
+</section>
+{% endif %}
+{% endwith %}
+{% endfor %}
+
+{% else %}
+
+{# Final leaf category (e.g., Sneakers) - show full product grid #}
+<section>
+    <div class="section-header">
+        <div class="section-title">
+            {% for ancestor in category.get_ancestors %}{{ ancestor.name }} > {% endfor %}
+            {{ category.name|capfirst }}
+            {% if category_discounts %}
+            | Up to <span style="color:red;">{{ category_discounts|floatformat:0 }}%</span> Off
+            {% endif %}
+        </div>
+        {% if category.parent %}
+        <div class="section-view-more">
+            <a href="{% url 'category' category.parent.slug %}" class="view-more-link">
+                Back to {{ category.parent.name }}
+            </a>
+        </div>
+        {% else %}
+        <div class="section-view-more">
+            <a href="{% url 'categories' %}" class="view-more-link">
+                View other categories
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="product-cards-container">
+        {% for product in products %}
+        {% include 'store/product-card.html' with product=product %}
+        {% empty %}
+        <p class="no-products">No products found in this category.</p>
+        {% endfor %}
+    </div>
+    <!-- Pagination  -->
+    {% include 'store/partials/pagination.html' %}
+</section>
+{% endif %}
+
+{% else %}
+{# No products fallback #}
+<section>
+    <p>We have no products in this category</p>
+    <a href="{% url 'home' %}" class="store-button">Back to Store</a>
+</section>
+<section class="no-products-section">
+    <div class="section-header">
+        <div class="section-title">Please check out these other products</div>
+        <div class="section-view-more">
+            <a href="{% url 'products' %}" class="view-more-link">View all</a>
+        </div>
+    </div>
+    <div class="product-cards-container">
+        {% for product in fallback_products|slice:":12" %}
+        {% include 'store/product-card.html' with product_list=fallback_products %}
+        {% endfor %}
+    </div>
+
+</section>
+{% endif %}
+
+{% endblock content %}

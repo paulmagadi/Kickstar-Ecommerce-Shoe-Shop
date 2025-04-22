@@ -1,0 +1,88 @@
+{% extends 'main/base.html' %}
+
+
+{% block content %}
+
+{% include 'store/partials/breadcrumbs.html' %}
+<div class="user-orders-page">
+    <div class="account-sidebar">
+        {% include 'users/partials/account-sidebar.html' %}
+    </div>
+    {% if orders %}
+    <div class="account-orders-section ">
+
+        {% for order in orders %}
+        <div class="order">
+            <h3>{{ order.order_number }}</h3>
+            <p>Placed on: {{ order.date_ordered }}</p>
+            <p>Order Status: {{ order.status }}</p>
+            <p>Amount: {{order.amount_paid}}</p>
+            
+            <form method="post" action="{% url 'set_order_session' %}">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <button type="submit">View Details</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <section>
+        You have no orders yet. All your orders will be listed here.
+        <br>
+        <button type="button"><a href="{% url 'home' %}">Continue Shopping</a></button>
+    </section>
+    {% endif %}
+</div>
+
+<style>
+    .user-orders-page {
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+        margin: 1em;
+        flex-wrap: wrap;
+    }
+
+    .account-sidebar {
+        width: 22%;
+        padding: 1em;
+        border: 1px solid var(--background-color);
+        border-radius: 8px;
+    }
+
+    .account-orders-section {
+        width: 76%;
+        border: 1px solid var(--background-color);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        padding: 1em;
+    }
+
+    .order {
+        padding: 1em;
+        margin-bottom: 1em;
+        border: 1px solid var(--background-color);
+        border-radius: 6px;
+    }
+
+    .order-items {
+        list-style: none;
+    }
+</style>
+{% endblock content %}
+
+
+
+{% comment %}
+<p>#{{order.order_number}}</p>
+<p>{{order.full_name}}</p>
+<p>{{order.email}}</p>
+<p>{{order.shipping_address }}</p>
+<p>{{order.status}}</p>
+<p>{{order.payment_method}}</p>
+<p>{{order.date_ordered}}</p>
+<br>
+{% endcomment %}

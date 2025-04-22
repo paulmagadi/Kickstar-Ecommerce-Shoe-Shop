@@ -1,0 +1,16 @@
+
+{% load active_class_tags %}
+<div class="sidebar" id="sidebar">
+    <button id="toggle-btn"><i class="fas fa-bars"></i></button>
+    <ul>
+        <a href="{% url 'dashboard' %}"><li class="{% admin_active_class 'dashboard' 'myadmin' %}"><i class="fas fa-home"></i> <span class="nav-text">Dashboard</span></li></a>
+        <a href="{% url 'stock_management' %}"><li class="{% admin_active_class 'stock_management' %}"><i class="fas fa-box"></i> <span class="nav-text">Products</span></li></a>
+        <a href="{% url 'customers_management' %}"><li class="{% admin_active_class 'customers_management' %}"><i class="fas fa-users"></i> <span class="nav-text">Customers</span></li></a>
+        <a href="{% url 'orders_management' %}"><li class="{% admin_active_class 'orders_management' %}"><i class="fas fa-shopping-cart"></i> <span class="nav-text">Orders</span></li></a>
+        <a href="{% url 'analytics' %}"><li class="{% admin_active_class 'analytics' %}"><i class="fas fa-chart-line"></i> <span class="nav-text">Analytics</span></li></a>
+        <a href="{% url 'add_product' %}"><li class="{% admin_active_class 'add_product' %}"><i class="fas fa-plus" aria-hidden="true"></i> <span class="nav-text">Add Product</span></li> </a>
+    </ul>
+    <div>
+        
+    </div>
+</div>

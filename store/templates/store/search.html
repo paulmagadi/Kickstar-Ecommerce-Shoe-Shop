@@ -1,0 +1,85 @@
+{% extends 'main/base.html' %}
+
+
+{% block content %}
+
+{% include 'store/partials/breadcrumbs.html' %}
+<!-- IMPLEMENT PAGINATION  -->
+{% if products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">
+            <p>{{ results_count }} Result{{ results_count|pluralize }} for
+                "<span class="text-blue-600">{{query}}</span>"</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if products %}
+    <div class="product-cards-container">
+        {% for product in products %}
+        {% include 'store/product-card.html' %}
+        {% endfor %}
+    </div>
+
+    {% include 'store/partials/pagination.html' %}
+</section>
+
+{% if related_products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Related Products</div>
+        <div class="section-view-more">
+            {% if product.brand %}
+            <a href="{% url 'product.brand' product.brand|slugify %}" title="View more items by {{ product.brand }}">
+                View more from {{ product.brand }}
+            </a>
+            {% else %}
+            <a href="{% url 'category' product.category.slug %}" title="View more items in {{ product.category }}">
+                View more in {{ product.category }}
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=related_products %}
+</section>
+{% endif %}
+
+<!-- RECENTLY VIEWED  -->
+
+{% if viewed_products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Recently viewed products</div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=viewed_products %}
+</section>
+{% endif %}
+    
+{% else %}
+<section>
+    <h1 class="section-title">No result found for {{query}}. <a href="{% url 'home' %}">Check store.</a></h1>
+</section>
+<!-- RECENTLY VIEWED  -->
+
+{% if viewed_products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Recently viewed products</div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=viewed_products %}
+</section>
+{% endif %}
+    
+
+<!-- CATALOG  -->
+<section>
+    <div class="section-header">
+        <div class="section-title">Shop other products</div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=fallback_products %}
+</section>
+{% endif %}
+
+
+{% endblock content %}

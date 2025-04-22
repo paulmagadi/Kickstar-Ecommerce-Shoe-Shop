@@ -1,0 +1,42 @@
+{% load static %}
+
+<div class="slideshow-container">
+    <div class="slide">
+        <div class="counter"></div>
+        <img src="{% static 'images/slides/1.jpg' %}" alt="image" width="100%">
+        <div class="caption"><span>Caption One</span></div>
+    </div>
+
+    <div class="slide">
+        <div class="counter"></div>
+        <img src="{% static 'images/slides/2.jpg' %}" alt="image" width="100%">
+        <div class="caption"><span>Caption Two</span></div>
+    </div>
+
+    <div class="slide">
+        <div class="counter"></div>
+        <img src="{% static 'images/slides/3.jpg' %}" alt="image" width="100%">
+        <div class="caption"><span>Caption Three</span></div>
+    </div>
+
+    <div class="slide">
+        <div class="counter"></div>
+        <img src="{% static 'images/slides/4.jpg' %}" alt="image" width="100%">
+        <div class="caption"><span>Caption Four</span></div>
+    </div>
+
+    <div class="slide-indicator-container">
+        <span class="slide-indicator"></span>
+        <span class="slide-indicator"></span>
+        <span class="slide-indicator"></span>
+        <span class="slide-indicator"></span>
+    </div>
+
+    <div class="slides-controls">
+        <button class="slide-prev" id="slide-prev">❮</button>
+        <button class="slide-next" id="slide-next">❯</button>
+    </div>
+
+</div>
+
+<script src="{% static 'js/slider.js' %}"></script>

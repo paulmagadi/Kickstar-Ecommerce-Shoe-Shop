@@ -1,0 +1,133 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="product-page-container">
+    {% include 'store/partials/breadcrumbs.html' %}
+    <section>
+        <div class="product-page-row">
+            <div class="product-page-image-container">
+                <div class="product-page-image">
+                    <img src="{{ product.imageURL}}" alt="Product" width="100%">
+                </div>
+                <div class="product-page-thumbnails-wrapper">
+                    {% if product and thumbnails %}
+                    <div class="product-page-thumbnails-container">
+                        <div class="product-page-thumbnail">
+                            <img src="{{ product.imageURL }}" alt="Thumbnail" width="100%">
+                        </div>
+                        {% for thumbnail in thumbnails %}
+                        <div class="product-page-thumbnail">
+                            <img src="{{ thumbnail.imageURL }}" alt="Thumbnail" width="100%">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <span
+                        class="product-page-thumbnail-scroll product-page-thumbnail-scroll-left">&LeftAngleBracket;</span>
+                    <span
+                        class="product-page-thumbnail-scroll product-page-thumbnail-scroll-right">&RightAngleBracket;</span>
+                    {% else %}
+                    <div class="product-page-thumbnails-container">
+                        <div class="product-page-thumbnail">
+                            <img src="{{ product.imageURL }}" alt="Thumbnail" width="100%">
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="product-page-product-details">
+                <p class="product-page-product-name">{{ product.name }}</p>
+                
+                {% if product.brand %}
+                <p class="product-page-product-brand">Brand: {{ product.brand }}</p>
+                {% endif %}
+                  
+                {% if product.is_sale %}
+                <div class="product-page-product-price">
+                    <p class="price"><del>${{ product.price }}</del></p>
+                    <p class="sale-price">${{ product.sale_price }}</p>
+                </div>
+                {% else %}
+                <div class="product-page-product-price">
+                    <p class="price" style="color: initial !important; font-weight: 600 !important;">${{ product.price}}
+                    </p>
+                </div>
+                {% endif %}
+
+                <div class="product-page-product-color">Color: {{ product.color}}</div>
+
+                <div class="product-page-available-quantity">
+                    {% if product.stock_quantity == 1 %}
+                    <p class="stock-quantity">Only {{ product.stock_quantity }} item left in store</p>
+                    {% elif product.stock_quantity <= 5 %} <p class="stock-quantity">Only {{ product.stock_quantity }}
+                        items
+                        left in store</p>
+                        {% else %}
+                        <p class="stock-quantity">We have {{ product.stock_quantity }} items in store</p>
+                        {% endif %}
+                </div>
+
+                <div class="product-page-product-quantity">
+                    <span>Quantity: </span> &nbsp;&nbsp;
+                    <button class="quantity-minus"> - </button>
+                    <span class="quantity"> 1 </span>
+                    <button class="quantity-plus"> + </button>
+                </div>
+
+                <div class="product-page-add-to-cart">
+                    <button class="add-to-cart" value="{{ product.id }}">Add to cart</button>
+                </div>
+
+                <div class="product-page-product-description">
+                    <h3>Description</h3> <br>
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    {% if related_products %}
+    <section>
+        <div class="section-header">
+            <div class="section-title">You may also like</div>
+            <div class="section-view-more">
+                {% if product.brand %}
+                    <a href="{% url 'product.brand' product.brand|slugify %}" title="View more items by {{ product.brand }}">
+                        View more from {{ product.brand }}
+                    </a>
+                {% else %}
+                
+                {% if product.category %}
+                <a href="{% url 'category' product.category.slug %}" title="View more items in {{ product.category }}">
+                    View more in {{ product.category }}
+                </a>
+                {% endif %}    
+                {% endif %}
+            </div>
+            
+        </div>
+        {% include 'store/partials/scroll-section.html' with product_list=related_products %}
+    </section>
+    {% endif %}
+
+
+    {% if viewed_products %}
+    <section>
+        <div class="section-header">
+            <div class="section-title">Recently Viewed Products</div>
+            <div class="section-view-more"><a href="{% url 'viewed_products' %}" title="View more items">View more</a>
+            </div>
+        </div>
+        {% include 'store/partials/scroll-section.html' with product_list=viewed_products %}
+    </section>
+    {% endif %}
+
+</div>
+
+
+<script src="{% static 'js/product.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock content %}

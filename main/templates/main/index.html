@@ -1,0 +1,157 @@
+<!-------------------------------------------------------------------------
+# This is the main entry point for the app
+# This page will link other pages including static pages of the app
+#Note: 1. Extends base.html from main app
+       2. Includes the page's slider [slider.html] banner 
+-------------------------------------------------------------------------->
+
+{% extends 'main/base.html' %}
+
+{% load custom_tags %}
+
+{% block content %}
+
+<!-------------------------------------------------------------------------
+# Display Banner slides Products
+#Note: 1. View - main.home
+-------------------------------------------------------------------------->
+
+{% include 'main/slider.html' %}
+
+<!------------------------------ Section End ------------------------------>
+
+
+<!-------------------------------------------------------------------------
+# Display Featured Products
+#Note: 1. Server limits to 12 items
+       2. More Featured items in Featured Products Page [View more]
+       3. Only products in stock are served
+       4. View - main.home
+-------------------------------------------------------------------------->
+{% if products and featured_products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Featured Kickstar Products
+            {% if highest_discount_featured %}
+            | Up to <span style="color:red;">{{ highest_discount_featured|floatformat:0 }}%</span> Off
+            {% endif %}
+        </div>
+        <div class="section-view-more"><a href="#." title="View more items">View more</a></div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=featured_products %}
+</section>
+{% else %}
+{% endif %}
+<!------------------------------ Section End ------------------------------>
+
+
+<!-------------------------------------------------------------------------
+# Display Sale Products
+#Note: 1. Server limits to 12 items
+       2. More Sale items in Featured Products Page [View more]
+       3. Only products in stock are served
+       4. View - main.home
+-------------------------------------------------------------------------->
+{% if products and sale_products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">
+            Shop our offers | Up to <span style="color:red;">{{ highest_discount|floatformat:0 }}%</span> Off
+        </div>
+
+        <div class="section-view-more"><a href="#." title="View more items">View more</a></div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=sale_products %}
+</section>
+{% else %}
+{% endif %}
+<!------------------------------ Section End ------------------------------>
+
+
+<!-------------------------------------------------------------------------
+# Display New Products
+#Note: 1. Server limits to 12 items
+       2. More Sale items in New Products Page [View more]
+       3. Only products in stock are served
+       4. Items added are only new within 30 day {ADD MAKE NEW IMPLEMENTATION}
+       5. View - main.home
+-------------------------------------------------------------------------->
+{% if products and new_products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">New items in our store
+
+            {% if highest_discount_new %}
+            | Up to <span style="color:red;">{{ highest_discount_new|floatformat:0 }}%</span> Off
+            {% endif %}
+
+        </div>
+        <div class="section-view-more"><a href="#." title="View more items">View more</a></div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=new_products %}
+</section>
+{% else %}
+{% endif %}
+<!------------------------------ Section End ------------------------------>
+
+
+<!-------------------------------------------------------------------------
+# Display Products by Main Categories Per Category
+# Will create a section for every main category 
+# Will display products under that category and it's decendant categories
+# Only use with fewer main categorie 1-5
+#Note: 1. Server limits to 5 categories [sections]
+       2. Server limits to 12 items per category
+       3. More Category items in Category Page [View more]
+       4. Only products in stock are served
+       5. load  custom_tags 
+       6. View - main.home
+-------------------------------------------------------------------------->
+{% for category, products in category_products.items %}
+{% if products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">
+            {{ category.name|capfirst }}
+            {% with discount=category_discounts|get_item:category.id %}
+            {% if discount > 0 %}
+            | Up to <span style="color:red;">{{ discount }}%</span> Off
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="section-view-more">
+            <a href="{% url 'category' category.slug %}" title="View more in {{ category.name }}">View more</a>
+        </div>
+    </div>
+    {% include 'store/partials/scroll-section.html' with product_list=products %}
+</section>
+{% endif %}
+{% endfor %}
+<!------------------------------ Section End ------------------------------>
+
+
+<!-------------------------------------------------------------------------
+# Display All Products
+#Note: 1. Server limits to 10 items
+       2. More Products in Products' Page [View more]
+       3. View - main.home
+-------------------------------------------------------------------------->
+{% if products %}
+<section>
+    <div class="section-header">
+        <div class="section-title">We have more products | Our Product Catalog</div>
+        <div class="section-view-more"><a href="{% url 'products' %}" title="View more items">View more</a></div>
+    </div>
+    <div class="product-cards-container">
+
+        {% for product in products|slice:":10" %}
+        {% include 'store/product-card.html' %}
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endif %}
+<!------------------------------ Section End ------------------------------>
+
+{% endblock content %}

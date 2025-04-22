@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+
+{% block content %}
+{% include 'store/partials/breadcrumbs.html' %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Recently Viewed Products | {{products_count}} Items</div>
+    </div>
+    <div class="product-cards-container">
+        {% if products %}
+
+        {% for product in products %}
+        {% include 'store/product-card.html' %}
+        {% endfor %}
+
+        {% else %}
+        <p>You have not viewed any products yet. Head to the store to shop more products</p>
+        <a href="{% url 'home' %}"><Button>Store</Button></a>
+        {% endif %}
+    </div>
+
+    {% include 'store/partials/pagination.html' %}
+</section>
+
+{% endblock content %}

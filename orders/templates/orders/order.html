@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+{% include 'store/partials/breadcrumbs.html' %}
+<div class="user-order-page">
+  <div class="account-sidebar">
+      {% include 'users/partials/account-sidebar.html' %}
+  </div>
+<div class="account-order-section">
+<p><strong>Order No:</strong> {{ order.order_number }}</p>
+<p><strong>Date:</strong> {{ order.date_ordered }}</p>
+<p><strong>Total:</strong> {{ order.amount_paid }}</p>
+<p><strong>Order Status:</strong> {{ order.status }}</p>
+
+<h3>Items:</h3>
+<ul>
+  {% for item in items %}
+    <li class="order-item">
+      Product: <a href="{% url 'product' item.product.slug %}">{{ item.product.name }}</a> <br>
+      Quantity: {{ item.quantity }} <br>
+      Price: {{ item.price }} <br>
+      <a href="{% url 'product' item.product.slug %}"><img src="{{ item.product.imageURL }}"
+              alt="no image" width="50px"></a>
+  </li>
+  {% endfor %}
+</ul>
+</div>
+
+
+<style>
+  .user-order-page {
+      display: flex;
+      justify-content: space-between;
+      gap: 1em;
+      margin: 1em;
+      flex-wrap: wrap;
+  }
+
+  .account-sidebar {
+      width: 22%;
+      padding: 1em;
+      border: 1px solid var(--background-color);
+      border-radius: 8px;
+  }
+
+  .account-order-section {
+      width: 76%;
+      border: 1px solid var(--background-color);
+      border-radius: 8px;
+      /* display: flex;
+      gap: 1em;
+      flex-wrap: wrap; */
+      padding: 1em;
+  }
+</style>
+{% endblock %}

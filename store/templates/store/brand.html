@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+{% include 'store/partials/breadcrumbs.html' %}
+<section>
+    <div class="section-header">
+        <div class="section-title">{{ brand|capfirst }} | <span class="product-count">{{product_count}} Item{{product_count|pluralize}}</span>
+            {% if highest_discount %}
+            - Up to <span style="color:red;">{{ highest_discount|floatformat:0 }}%</span> Off
+            {% endif %}
+        </div>
+        <div class="section-view-more"><a href="{% url 'brands' %}">View other Brands</a></div>
+    </div>
+    <div class="product-cards-container">
+        {% for product in products %}
+        {% include 'store/product-card.html' %}
+        {% endfor %}
+    </div>
+
+    {% include 'store/partials/pagination.html' %}
+</section>
+{% endblock content %}
+

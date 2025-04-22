@@ -1,0 +1,9 @@
+<div class="scroll-product-section-wrapper">
+    <div class="scroll-product-section-container scrolling-container">
+        {% for product in product_list %}
+        {% include 'store/product-card.html' %}
+        {% endfor %}
+    </div>
+    <span class="scroll-btn scroll-left-btn">&LeftAngleBracket;</span>
+    <span class="scroll-btn scroll-right-btn">&RightAngleBracket;</span>
+</div>

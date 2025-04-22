@@ -1,0 +1,77 @@
+{% include 'users/partials/profile-image.html' %}
+<hr>
+<br>
+{% load active_class_tags %}
+<div class="sidebar-links">
+    <ul>
+        <li><a href="{% url 'profile' %}" class="{% active_class 'profile' %}">Account Preview</a></li>
+        <li><a href="{% url 'shipping_address' %}" class="{% active_class 'shipping_address' %}">Shipping Address</a></li>
+        <li><a href="{% url 'update_billing' %}" class="{% active_class 'update_billing' %}">Billing Address</a></li>
+        <li><a href="{% url 'orders' %}" class="{% active_class 'orders' %}">My Orders</a></li>
+        <li><a href="{% url 'cart' %}" class="{% active_class 'cart' %}">My Cart[Messages]</a></li>
+        <li><a href="{% url 'viewed_products' %}" class="{% active_class 'viewed_products' %}">Recently Viewed</a></li>
+        <li><a href="{% url 'account_settings' %}" class="{% active_class 'account_settings' %}">Account Settings</a>
+        </li>
+
+    </ul>
+</div>
+<br>
+<hr>
+<br>
+<div class="logout-user">
+    <button type="button"><a href="{% url 'logout' %}">Logout</a></button>
+</div>
+
+<style>
+    hr {
+        border: 1px solid var(--background-color);
+    }
+
+    .sidebar-links ul {
+        list-style: none;
+    }
+
+    .sidebar-links ul li {
+        padding: .8em 0;
+    }
+
+    .sidebar-links ul li a {
+        color: var(--neutral-dark-color);
+        font-size: 1.2rem;
+    }
+
+    .sidebar-links ul li a:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .active-sidebar {
+        color: var(--primary-color) !important;
+    }
+
+    .logout-user {
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .logout-user button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: var(--primary-color);
+    }
+
+    .logout-user button:hover {
+        background-color: var(--secondary-color);
+        scale: 1.05;
+    }
+
+    .logout-user a {
+        color: var(--white-color);
+        font-weight: 600;
+    }
+
+    .logout-user a:hover {
+        text-decoration: none;
+    }
+</style>

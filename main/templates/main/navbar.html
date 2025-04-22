@@ -1,0 +1,106 @@
+{% load static %}
+
+<header>
+    <div class="header">
+        <div class="logo">
+            <a href="{% url 'home' %}"><img src="{% static 'images/brand/logo2.svg' %}" alt="" width="70px"
+                    title="KickStar"></a>
+
+            <a href="{% url 'dashboard' %}" target="_blank" rel="noopener">Myadmin</a>
+        </div>
+
+        <div class="search-bar">
+
+            <form action="{% url 'search' %}" method="get">
+                <input type="search" placeholder="Search Products, Categories, Brands, ..." name="query" required>
+                <i class="ri-search-line"></i>
+                <input type="submit" value="Search">
+            </form>
+        </div>
+
+        <div class="navigation">
+            <div class="help">
+                <i class="ri-questionnaire-line"></i>
+            </div>
+
+
+            {% if user.is_authenticated %}
+            <div class="account">
+                <div class="account-initials">
+                    <a href="{% url 'profile' %}">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</a>
+                </div>
+                <div class="account-dropdown">
+                    <p class="login"><a href="{% url 'profile' %}">Profile</a></p>
+                    <hr>
+                    <p class="login"><a href="{% url 'logout' %}">Logout</a></p>
+                </div>
+            </div>
+            {% else %}
+            <div class="account">
+                <i class="ri-account-circle-line" title="Account"></i>
+                <div class="account-dropdown">
+                    <p class="login"><a href="{% url 'login' %}?next={{ request.path }}">Login</a></p>
+                    <p class="register"><a href="{% url 'register' %}?next={{ request.path }}">Register</a></p>
+                </div>
+            </div>
+            {% endif %}
+
+
+            <div class="cart">
+                <a href="{% url 'cart' %}">
+                    <i class="ri-shopping-cart-line" title="Cart"></i>
+                    <span class="cart-count">{{ cart|length }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-list-wrapper">
+            <div class="nav-list-container scrolling-container">
+                <ol class="nav-item-list">
+                    {% if categories %}
+                    <li class="nav-categories-menu">
+                        <a href="{% url 'categories' %}" class="all-categories-nav-link"><i class="ri-menu-search-line"
+                                style="font-size: 1.3rem;"></i></a>
+
+                        <div class="categories-dropdown">
+                            <h3 style="text-align: center; text-decoration: underline; margin-bottom: 1em;">
+                                Shop our Categories</h3>
+                            <ol class="category-tree">
+                                {% for category in categories %}
+                                {% if not category.parent %}
+                                {% include 'main/partials/category-dropdown.html' with category=category %}
+                                {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    </li>
+                    {% endif %}
+
+                    {% if brand_list %}
+                    {% for brand in brand_list %}
+                    <li class="nav-brand-item">
+                        <a href="{% url 'product.brand' brand|slugify %}" title="Shop {{brand}} items">
+                            {{brand}}
+                        </a>
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ol>
+            </div>
+            <span class="scroll-btn scroll-left-btn">&LeftAngleBracket;</span>
+            <span class="scroll-btn scroll-right-btn">&RightAngleBracket;</span>
+        </div>
+
+
+    </nav>
+
+
+
+</header>
+
+
+<div class="header-after"></div>
+
+<script src="{% static 'js/navbar.js' %}"></script>

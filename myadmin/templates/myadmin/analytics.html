@@ -1,0 +1,53 @@
+{% extends 'myadmin/partials/base.html' %}
+
+
+{% block content %}
+<header class="topbar">
+    <h1>Kickstar Kenya Analytics</h1>
+</header>
+<section class="charts-section">
+    <h2>Analytics Overview</h2>
+    <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="ordersChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="visitsChart"></canvas>
+    </div>
+
+</section>
+
+<style>
+    
+    .charts-section {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .charts-section h2 {
+        margin-bottom: 20px;
+    }
+
+    .chart-container {
+        margin-bottom: 30px;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    canvas {
+        width: 100% !important;
+        max-width: 600px;
+        height: auto !important;
+    }
+
+</style>
+{% endblock content %}
+    

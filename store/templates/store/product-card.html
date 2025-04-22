@@ -1,0 +1,42 @@
+<div class="product-card">
+    <div class="product-card-image">
+        <a href="{% url 'product' product.slug %}" title="View Product Details"><img src="{{ product.imageURL}}" alt="{{ product.name }}"></a>
+        
+        {% if product.is_sale %}
+        <div class="product-card-sale-badge">
+            <p>-{{ product.percentage_discount }}%</p>
+        </div>
+        {% endif %}
+
+        
+        {% comment %}
+            {% if product.is_new %}
+            <div class="product-card-new-badge">
+                <p>new</p>
+            </div>
+            {% endif %}
+        {% endcomment %}
+            
+    </div>
+    <div class="product-card-details">
+        <div class="product-card-product-name"><a href="{% url 'product' product.slug %}" title="View Product Details">{{ product.name }}</a></div>
+        <div class="product-card-price-cart">
+            {% if product.is_sale %}
+            <span class="product-card-price">
+                <p class="price"><del>${{ product.price }}</del></p>
+                <p class="sale-price">${{ product.sale_price }}</p>
+            </span>
+            {% else %}
+            <span class="product-card-price">
+                <p class="price">${{ product.price }}</p>
+            </span>
+            {% endif %}
+            <span class="product-card-add-to-cart">
+                <button class="add-to-cart"  value="{{ product.id }}">Add to cart</button>
+            </span>
+        </div>
+        
+        
+            
+    </div>
+</div>

@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+{% include 'store/partials/breadcrumbs.html' %}
+<section>
+    <div class="section-header">
+        <div class="section-title">Shop our Brands</div>
+    </div>
+</section>
+
+{% for brand in brands %}
+<section class="brand-section">
+    <div class="section-header">
+        <div class="section-title">
+            {{ brand.name }} | 
+            <span class="product-count"> {{ brand.product_count }} Item{{brand.product_count|pluralize }}</span>
+            {% if brand.highest_discount %}
+            - Up to <span style="color: red;">{{ brand.highest_discount }}% </span>Off
+            {% endif %}
+        </div>
+        
+
+        <div class="section-view-more">
+            <a href="{% url 'product.brand' brand.name|slugify %}" title="View more {{ brand.name }} items">
+                View more</a>
+        </div>
+    </div>
+
+    {% include 'store/partials/scroll-section.html' with product_list=brand.products %}
+</section>
+{% endfor %}
+{% endblock content %}

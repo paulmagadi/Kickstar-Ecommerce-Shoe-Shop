@@ -1,0 +1,16 @@
+<p class="login"><a href="{% url 'shipping_address' %}?next={{ request.path }}">Shipping Address</a></p>
+
+<p class="login"><a href="{% url 'login' %}?next={{ request.path }}">Login</a></p>
+<p class="register"><a href="{% url 'register' %}?next={{ request.path }}">Register</a></p>
+
+
+
+if self.request.user.is_authenticated:
+            # Get current user profile
+            current_user = Profile.objects.filter(user=self.request.user)
+
+            # Properly serialize cart as JSON
+            cart_dict = json.dumps(self.cart)  
+
+            # Update user's old_cart
+            current_user.update(old_cart=cart_dict)
