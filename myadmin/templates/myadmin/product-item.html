@@ -1,7 +1,206 @@
-<p>Name: {{product.name}}</p>
-<p>Price: ${{product.price}}</p>
-<p>Is sale: {{product.is_sale}}</p>
-{% if product.is_sale %}
-<p>Sale Price: ${{product.sale_price}}</p>
-{% endif %}
-<p>Description: {{product.description}}</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .product-container {
+            max-width: 1100px;
+            margin: auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-header {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .main-image img {
+            width: 350px;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            object-fit: cover;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-details h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .category span {
+            font-weight: 500;
+            color: #007bff;
+        }
+
+        .price {
+            margin: 15px 0;
+            font-size: 1.3em;
+        }
+
+        .sale-price {
+            color: #d6336c;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
+        }
+
+        .discount {
+            background: #ffe0e0;
+            color: #d6336c;
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        .stock {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .stock.out-of-stock {
+            color: red;
+        }
+
+        .description {
+            margin-top: 30px;
+        }
+
+        .description h2 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .thumbnails-section {
+            margin-top: 30px;
+        }
+
+        .thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .thumbnails img {
+            width: 120px;
+            height: 120px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="product-container">
+        <!-- Product Main Info -->
+        <div class="product-header">
+            <div class="main-image">
+                <img src="{{ product.imageURL }}" alt="{{ product.name }}">
+            </div>
+            <div class="product-details">
+                <h1>{{ product.name }}</h1>
+                <p class="category">Category: <span>{{ product.category.get_full_path }}</span></p>
+                <p class="brand">Brand: {{ product.brand }}</p>
+                <p class="price">
+                    {% if product.is_sale %}
+                    <span class="sale-price">${{ product.sale_price }}</span>
+                    <span class="original-price">${{ product.price }}</span>
+                    <span class="discount">-{{ product.percentage_discount }}%</span>
+                    {% else %}
+                    <span class="price">${{ product.price }}</span>
+                    {% endif %}
+                </p>
+                <p class="stock {% if not product.in_stock %}out-of-stock{% endif %}">
+                    {% if product.in_stock %}
+                    In Stock ({{ product.stock_quantity }} left)
+                    {% else %}
+                    Out of Stock
+                    {% endif %}
+                </p>
+                <p class="material">Material: {{ product.material }}</p>
+                <p class="color">Color: {{ product.color }}</p>
+                <p class="size">Size: {{ product.size }}</p>
+                <p class="created">Added: {{ product.created_at|date:"M d, Y" }}</p>
+            </div>
+        </div>
+
+        <!-- Product Description -->
+        {% if product.description %}
+        <div class="description">
+            <h2>Description</h2>
+            <p>{{ product.description }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Thumbnails -->
+        {% if product.thumbnails.all %}
+        <div class="thumbnails-section">
+            <h2>Additional Images</h2>
+            <div class="thumbnails">
+                {% for thumb in product.thumbnails.all %}
+                <img src="{{ thumb.imageURL }}" alt="Thumbnail">
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <br>
+    <button type="button"><a href="{% url 'update_product' product.slug %}">Edit/Update Product</a></button>
+    <br>
+
+    <!-- Trigger button -->
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ product.id }}">
+    Delete
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="confirmDeleteModal{{ product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ product.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel{{ product.id }}">Confirm Deletion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to permanently delete <strong>{{ product.name }}</strong>?
+        </div>
+        <div class="modal-footer">
+          <form method="POST" action="{% url 'delete_product' product.slug %}">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+
+</html>

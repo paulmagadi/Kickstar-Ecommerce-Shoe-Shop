@@ -7,7 +7,7 @@ from orders.models import Order
 from store.models import Category, Product, Thumbnail
 from users.models import CustomUser
 from django.utils.http import url_has_allowed_host_and_scheme
-
+from django.contrib import messages
 
 
 def dashboard(request):
@@ -124,7 +124,23 @@ def update_product(request, slug):
     }
     return render(request, 'myadmin/forms/update-product.html', context)
 
+# def delete_product(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+#     product.delete()
+#     messages.success(request, "Product deleted successfully.")
+
+#     return redirect('product_list')
+
+def delete_product(request, slug):
+    product = get_object_or_404(Product, slug=slug)
     
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, "Product deleted successfully.")
+    else:
+        messages.warning(request, "Invalid request method.")
+    
+    return redirect('product_list')
 
 from django.http import JsonResponse
 from django.views.generic import View

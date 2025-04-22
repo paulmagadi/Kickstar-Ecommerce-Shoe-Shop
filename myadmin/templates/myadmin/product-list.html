@@ -1,6 +1,8 @@
+
 <section class="products-section">
     <h2>Product Inventory</h2>
-
+<p>Table view</p>
+<p>Grid View</p>
     {% if products %}
     <table class="products-table">
         <thead>
@@ -27,6 +29,7 @@
                 <td><span class="status less-stock">In Stock</span></td>
                 <td><a href="{% url 'product_item' product.slug %}">view</a></td>
                 <td><a href="{% url 'update_product' product.slug %}">Update</a></td>
+                <td><a href="{% url 'delete_product' product.slug %}">Delete</a></td>
                 </tr>
                 {% else %}
                 <tr>
@@ -38,6 +41,7 @@
                     <td><span class="status in-stock">In Stock</span></td>
                     <td><a href="{% url 'product_item' product.slug %}">view</a></td>
                     <td><a href="{% url 'update_product' product.slug %}">Update</a></td>
+                    <td><a href="{% url 'delete_product' product.slug %}">Delete</a></td>
                 </tr>
                 {% endif %}
                 {% else %}
@@ -50,6 +54,7 @@
                     <td><span class="status out-stock">Out of Stock</span></td>
                     <td><a href="{% url 'product_item' product.slug %}">view</a></td>
                     <td><a href="{% url 'update_product' product.slug %}">Update</a></td>
+                    <td><a href="{% url 'delete_product' product.slug %}">Delete</a></td>
                 </tr>
                 {% endif %}
         </tbody>
@@ -59,6 +64,9 @@
 
     {% endif %}
 </section>
+
+
+  
 
 <style>
     .products-section {
