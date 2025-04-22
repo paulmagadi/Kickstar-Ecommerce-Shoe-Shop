@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from myadmin.forms import CategoryForm, ProductForm
@@ -43,30 +43,41 @@ def orders_management(request):
 def analytics(request):
     return render(request, 'myadmin/analytics.html')
 
-def products_list(request):
+def product_list(request):
     products = Product.objects.all().order_by('-created_at')
     context = {
         'products': products,
     }
-    return render(request, 'myadmin/products-list.html', context)
+    return render(request, 'myadmin/product-list.html', context)
 
-def categories_list(request):
+def product_item(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    context = {
+        'product': product,
+    }
+    return render(request, 'myadmin/product-item.html', context)
+
+
+def category_list(request):
     categories = Category.objects.all()
     context = {
         'categories': categories,
     }
-    return render(request, 'myadmin/productcategories-list.html', context)
+    return render(request, 'myadmin/category-list.html', context)
 
-# def add_product(request):
-#     if request.method == 'POST':
-#         form = ProductForm(request.POST, request.FILES)
-#         request.FILES.getlist('thumbnails')
-#         if form.is_valid():
-#             form.save()
-#             return redirect('stock_management')
-#     else:
-#         form = ProductForm()
-#     return render(request, 'myadmin/forms/add-product.html', {'form': form})
+def category_products_list(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    # Get all descendant categories (including self)
+    all_descendants = category.get_descendants(include_self=True)
+    
+    # Get products from all these categories
+    products = Product.objects.filter(is_listed=True, category__in=all_descendants)
+    context = {
+        'category': category,
+        'products': products,
+    }
+    return render(request, 'myadmin/category-products-list.html', context)
+
 
 def add_product(request):
     if request.method == 'POST':
@@ -87,18 +98,32 @@ def add_product(request):
         
     return render(request, 'myadmin/forms/add-product.html', {'form': form, 'category_form': category_form,})
 
+def update_product(request, slug):
+    product = get_object_or_404(Product, slug=slug)
 
-# def add_category_ajax(request):
-#     if request.method == 'POST':
-#         form = CategoryForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             category = form.save()
-#             return JsonResponse({
-#                 'success': True,
-#                 'id': category.id,
-#                 'name': category.get_full_path()
-#             })
-#         return JsonResponse({'success': False, 'errors': form.errors})
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        thumbnails = request.FILES.getlist('thumbnails')
+
+        if form.is_valid():
+            product = form.save()  # Save the updated product info
+
+            # Save new thumbnails if any
+            for thumb in thumbnails:
+                Thumbnail.objects.create(product=product, thumbnail=thumb)
+
+            return redirect('stock_management')
+    else:
+        form = ProductForm(instance=product)  
+
+    category_form = CategoryForm()  # for the popup modal
+    context = {
+        'form': form,
+        'category_form': category_form,
+        'product': product,
+    }
+    return render(request, 'myadmin/forms/update-product.html', context)
+
     
 
 from django.http import JsonResponse

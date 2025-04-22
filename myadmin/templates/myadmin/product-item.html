@@ -1,0 +1,7 @@
+<p>Name: {{product.name}}</p>
+<p>Price: ${{product.price}}</p>
+<p>Is sale: {{product.is_sale}}</p>
+{% if product.is_sale %}
+<p>Sale Price: ${{product.sale_price}}</p>
+{% endif %}
+<p>Description: {{product.description}}</p>

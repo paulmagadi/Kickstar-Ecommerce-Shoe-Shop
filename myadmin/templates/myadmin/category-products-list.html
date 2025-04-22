@@ -1,49 +1,6 @@
-{% extends 'myadmin/partials/base.html' %}
-
-
-{% block content %}
-<header class="topbar">
-    <h1>Products Inventory Management</h1>
-</header>
-
-<nav>
-    <ul>
-        <a href="{% url 'product_list' %}">Products</a>
-        <a href="{% url 'category_list' %}">Categories</a>
-    </ul>
-</nav>
-
-<section class="cards">
-    <div class="card">
-        <a href="{% url 'add_product' %}">
-            <h5>Add New Product</h5>
-        </a>
-        <a href="{% url 'add_product' %}"><p>+</p></a>
-        
-    </div>
-    <div class="card">
-        <a href="{% url 'add_category' %}"><h5>Add New Category</h5></a>
-        <a href="{% url 'add_category' %}"><p>+</p></a>
-        
-    </div>
-    <div class="card">
-        <a href="{% url 'product_list' %}"><h5>Total products</h5></a>
-        
-        <p>{{products|length}}</p>
-    </div>
-    <div class="card">
-        <h5>Products in stock</h5>
-        <p>{{products_in_stock|length}} / {{products|length}}</p>
-
-    </div>
-    <div class="card">
-        <h5>Listed Products</h5>
-        <p>{{listed_products|length}} / {{products|length}}</p>
-    </div>
-</section>
 
 <section class="products-section">
-    <h2>Product Inventory</h2>
+    <h2>Products in {{category.name}} Category</h2>
 
     {% if products %}
     <table class="products-table">
@@ -70,7 +27,7 @@
                 <td>{{product.stock_quantity}}</td>
                 <td>${{product.price}}</td>
                 <td><span class="status less-stock">In Stock</span></td>
-                <th>View</th>
+                <td>view</td>
             </tr>
             {% else %}
             <tr>
@@ -80,7 +37,7 @@
                 <td>{{product.stock_quantity}}</td>
                 <td>${{product.price}}</td>
                 <td><span class="status in-stock">In Stock</span></td>
-                <th>View</th>
+                <td>view</td>
             </tr>
             {% endif %}
             {% else %}
@@ -91,7 +48,7 @@
                 <td>{{product.stock_quantity}}</td>
                 <td>${{product.price}}</td>
                 <td><span class="status out-stock">Out of Stock</span></td>
-                <th>View</th>
+                <td>view</td>
             </tr>
             {% endif %}
         </tbody>
@@ -102,23 +59,8 @@
     {% endif %}
 </section>
 
-
 <style>
-
-.cards {
-        display: flex;
-        gap: 1em;
-        flex-wrap: wrap;
-    }
-
-    .card {
-        background: white;
-        padding: 1em;
-        flex: 1;
-        min-width: 120px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-    }
+    
     .products-section {
         margin-top: 30px;
         background: white;
@@ -171,4 +113,3 @@
         font-size: 0.9em;
     }
 </style>
-{% endblock content %}

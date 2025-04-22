@@ -1,0 +1,13 @@
+<section class="Categories">
+    <h2>Product Categories</h2>
+    
+    {% if categories %}
+        
+        {% for category in categories %}
+
+            <a href="{% url 'category_products_list' category.slug %}"><p>{{category}}</p></a>
+        {% endfor %}
+            
+    {% endif %}
+        
+</section>
