@@ -14,7 +14,11 @@ urlpatterns = [
     path('product/add/', views.add_product, name='add_product'),
     path('product/update/<str:slug>/', views.update_product, name='update_product'),
     path('product/delete/<str:slug>/', views.delete_product, name='delete_product'),
+    path('thumbnails/delete/<int:id>/', views.delete_thumbnail, name='delete_thumbnail'),
     # path('myadmin/add-category/', views.add_category_ajax, name='add_category_ajax'),
     path('category/add/', views.add_category, name='add_category'), 
+    path('category/update/<str:slug>/', views.update_category, name='update_category'), 
+    path('category/delete/<str:slug>/', views.delete_category, name='delete_category'),
+    path('category/delete-preview/<slug:slug>/', views.category_delete_preview, name='category_delete_preview'),
     path('category/add-popup/', views.CategoryAddPopupView.as_view(), name='category_add_popup'),
 ]

@@ -9,205 +9,310 @@
 
 
 <div class="add-product-form-container">
-<form method="POST" action="{% url 'update_product' product.slug %}" enctype="multipart/form-data" class="custom-form">
-    {% csrf_token %}
-    <!-- Category -->
-    <div class="form-group">
-        <label for="category">Category</label>
-        <select name="category" id="category" class="custom-input">
-            <option value="">Select category</option>
-            {% for category in form.category.field.queryset %}
-            <option value="{{ category.id }}" {% if category.id == form.category.value %} selected {% endif %}>
-                {{ category.get_full_path }}
-            </option>
-            {% endfor %}
-        </select>
-        {% for error in form.category.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-
-        <!-- Button to open modal -->
-        <button type="button" onclick="openCategoryModal()" class="add-new-category-button">
-            + Add New Category
-        </button>
-        <small>You can add a new category if it doesn't exist already</small>
-
-        {% if form.category.errors %}
-        <div class="error-message">
+    <form method="POST" action="{% url 'update_product' product.slug %}" enctype="multipart/form-data"
+        class="custom-form">
+        {% csrf_token %}
+        <!-- Category -->
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select name="category" id="category" class="custom-input">
+                <option value="">Select category</option>
+                {% for category in form.category.field.queryset %}
+                <option value="{{ category.id }}" {% if category.id == form.category.value %} selected {% endif %}>
+                    {{ category.get_full_path }}
+                </option>
+                {% endfor %}
+            </select>
             {% for error in form.category.errors %}
-            <span>{{ error }}</span>
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+
+            <!-- Button to open modal -->
+            <button type="button" onclick="openCategoryModal()" class="add-new-category-button">
+                + Add New Category
+            </button>
+            <small>You can add a new category if it doesn't exist already</small>
+
+            {% if form.category.errors %}
+            <div class="error-message">
+                {% for error in form.category.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+
+        <!-- Product Name -->
+        <div class="form-group">
+            <label for="name">Product Name*</label>
+            <input type="text" name="name" id="name" class="custom-input"
+                value="{{ form.name.value|default_if_none:'' }}" placeholder="e.g. Nike Air">
+            {% for error in form.name.errors %}
+            <span class="error-message">{{ error }}</span>
             {% endfor %}
         </div>
-        {% endif %}
-    </div>
+        <!-- Price -->
+        <div class="form-group">
+            <label for="price">Price*</label>
+            <input type="number" step="0.01" name="price" id="price" class="custom-input"
+                value="{{ form.price.value|default_if_none:'' }}" placeholder="0.00">
+            {% for error in form.price.errors %}
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <!-- Description  -->
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="description" id="description" class="custom-input" rows="4"
+                placeholder="e.g. A comfortable shoes ...">{{form.description.value|default_if_none:'' }}</textarea>
+            <small>Write a short description about the product</small>
+            {% for error in form.description.errors %}
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Product Key Words -->
+        <div class="form-group">
+            <label for="name">Key Words (Optional) </label>
+            <input type="text" name="key_words" id="key_words" class="custom-input"
+                value="{{ form.key_words.value|default_if_none:'' }}" placeholder="e.g. Nike Air, Shoes">
+            <small>Enter product key words or search tags relating to the product</small>
+            {% for error in form.name.errors %}
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
 
 
-    <!-- Product Name -->
-    <div class="form-group">
-        <label for="name">Product Name*</label>
-        <input type="text" name="name" id="name" class="custom-input" value="{{ form.name.value|default_if_none:'' }}"
-            placeholder="e.g. Nike Air">
-        {% for error in form.name.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <!-- Price -->
-    <div class="form-group">
-        <label for="price">Price*</label>
-        <input type="number" step="0.01" name="price" id="price" class="custom-input"
-            value="{{ form.price.value|default_if_none:'' }}" placeholder="0.00">
-        {% for error in form.price.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <!-- Description  -->
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea name="description" id="description" class="custom-input" rows="4" 
-        placeholder="e.g. A comfortable shoes ...">{{form.description.value|default_if_none:'' }}</textarea>
-        <small>Write a short description about the product</small>
-        {% for error in form.description.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Product Image -->
+        <div class="form-group">
+            <img src="{{ product.imageURL }}" alt="{{ product.name }}" width="100px">
+            <label for="image">Product Image</label>
+            <input type="file" name="image" id="image" class="custom-input-file">
+            {% for error in form.image.errors %}
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-    <!-- Product Key Words -->
-    <div class="form-group">
-        <label for="name">Key Words (Optional) </label>
-        <input type="text" name="key_words" id="key_words" class="custom-input"
-            value="{{ form.key_words.value|default_if_none:'' }}" placeholder="e.g. Nike Air, Shoes">
-        <small>Enter product key words or search tags relating to the product</small>
-        {% for error in form.name.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Thumbnails -->
+        <div class="form-group">
 
-
-    <!-- Product Image -->
-    <div class="form-group">
-        <label for="image">Product Image</label>
-        <input type="file" name="image" id="image" class="custom-input-file">
-        {% for error in form.image.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <!-- Thumbnails -->
-    <div class="form-group">
-        <label for="thumbnails">Upload Thumbnails (Optional)</label>
-        <input type="file" name="thumbnails" id="thumbnails" class="custom-input-file" multiple>
-        <small>You can upload multiple additional images of the same product e.g. Different views</small>
-    </div>
-    <!-- Sale Price  -->
-    <div class="form-group">
-        <label for="sale_price">Sale Price</label>
-        <input type="number" step="0.01" name="sale_price" id="sale_price" class="custom-input"
-            value="{{ form.sale_price.value|default_if_none:'' }}" placeholder="0.00">
-        <small>Must be a figure less than product price</small>
-        {% for error in form.sale_price.errors %}
-        <span class="error-message">{{ error }}</span>
-        {% endfor %}
-    </div>
-
-    <div class="form-group checkbox-group">
-        <label><input type="checkbox" name="is_sale" {% if product.is_sale %} checked {% endif %} disabled> 
-            On Sale</label>
-        <small>Any product with a sale price less than product price is Sale</small>
-        <hr style="width: 100%;">
-        <label><input type="checkbox" name="is_listed" {% if product.is_listed %}checked{% endif %}>
-            Listed</label>
-        <small>Products are listed by default. Only listed products are seen in the store</small>
-        <hr style="width: 100%;">
-
-        <label><input type="checkbox" name="is_featured" {% if product.is_featured %}checked{% endif %}>
-            Featured</label>
-        <small>Only check for products that qualify as featured, e.g. New products, Products on offer, ...</small>
-        <hr style="width: 100%;">
-
-        <label><input type="checkbox" name="is_new" {% if product.is_new %}checked{% endif %}> New
-            Arrival</label>
-        <small>Products are new for 30 days by default</small>
-        <hr style="width: 100%;">
-
-        <label><input type="checkbox" name="in_stock" {% if product.in_stock %}checked{% endif %} disabled> In
-            Stock</label>
-        <small>Any product with at least 1 item in stock is In Stock</small>
-    </div>
-    <!-- Brand -->
-    <div class="form-group">
-        <label for="brand">Brand</label>
-        <input type="text" name="brand" id="brand" class="custom-input"
-            value="{{ form.brand.value|default_if_none:'' }}" placeholder="e.g. Nike, Adidas">
-    </div>
-    <!-- Material -->
-    <div class="form-group">
-        <label for="material">Material</label>
-        <input type="text" name="material" id="material" class="custom-input"
-            value="{{ form.material.value|default_if_none:'' }}" placeholder="e.g. Leather, Rubber">
-    </div>
-    <!-- Color -->
-    <div class="form-group">
-        <label for="color">Color</label>
-        <input type="text" name="color" id="color" class="custom-input"
-            value="{{ form.color.value|default_if_none:'' }}" placeholder='e.g. Black, White'>
-    </div>
-    <!-- Size -->
-    <div class="form-group">
-        <label for="size">Size</label>
-        <input type="text" name="size" id="size" class="custom-input" value="{{ form.size.value|default_if_none:'' }}"
-            placeholder="e.g. M, L, XL">
-    </div>
-    <!-- Quantity -->
-    <div class="form-group">
-        <label for="stock_quantity">Stock Quantity</label>
-        <input type="number" name="stock_quantity" id="stock_quantity" class="custom-input"
-            value="{{ form.stock_quantity.value|default_if_none:'' }}">
-    </div>
-
-    <button type="submit" class="submit-btn">Update Product</button>
-    <button type="button" class="cancel-btn"><a href="{% url 'stock_management' %}">Cancel</a></button>
-</form>
-
-
-
-<!-- Modal for adding new category -->
-<div id="categoryModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeCategoryModal()">&times;</span>
-        <h3>Add New Category</h3>
-        <form id="categoryForm" method="post" action="{% url 'category_add_popup' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_name">Name*</label>
-                <input type="text" name="name" id="id_name" class="custom-input" placeholder="e.g. Men's, Sneakers" required>
+            <div class="thumbnails">
+                {% for thumbnail in thumbnails %}
+                <img src="{{ thumbnail.imageURL }}" alt="{{ product.name }}" width="100px">
+                <button type="button" class="delete-thumbnail-button">Delete</button>
+                {% endfor %}
             </div>
 
-            <div class="form-group">
-                <label for="id_parent">Parent</label>
-                <select name="parent" id="id_parent" class="custom-input">
-                    <option value="">---------</option>
-                    {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.get_full_path }}</option>
-                    {% endfor %}
-                </select>
+            <label for="thumbnails">Upload Thumbnails (Optional)</label>
+            <input type="file" name="thumbnails" id="thumbnails" class="custom-input-file" multiple>
+            <small>You can upload multiple additional images of the same product e.g. Different views</small>
+        </div>
+        <!-- Sale Price  -->
+        <div class="form-group">
+            <label for="sale_price">Sale Price</label>
+            <input type="number" step="0.01" name="sale_price" id="sale_price" class="custom-input"
+                value="{{ form.sale_price.value|default_if_none:'' }}" placeholder="0.00">
+            <small>Must be a figure less than product price</small>
+            {% for error in form.sale_price.errors %}
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-            </div>
-            <div class="form-group">
-                <label for="id_description">Description</label>
-                <textarea name="description" id="id_description" class="custom-input" rows="3" placeholder="e.g. A comfortable shoes ..."></textarea>
-                <small>A short description about the category</small>
-            </div>
+        <div class="form-group checkbox-group">
+            <label><input type="checkbox" name="is_sale" {% if product.is_sale %} checked {% endif %} disabled>
+                On Sale</label>
+            <small>Any product with a sale price less than product price is Sale</small>
+            <hr style="width: 100%;">
+            <label><input type="checkbox" name="is_listed" {% if product.is_listed %}checked{% endif %}>
+                Listed</label>
+            <small>Products are listed by default. Only listed products are seen in the store</small>
+            <hr style="width: 100%;">
 
-            <div class="form-group">
-                <label for="id_image">Image</label>
-                <input type="file" name="image" id="id_image" class="custom-input">
-                <small>Can be an image that represents the category</small>
-            </div>
+            <label><input type="checkbox" name="is_featured" {% if product.is_featured %}checked{% endif %}>
+                Featured</label>
+            <small>Only check for products that qualify as featured, e.g. New products, Products on offer, ...</small>
+            <hr style="width: 100%;">
 
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+            <label><input type="checkbox" name="is_new" {% if product.is_new %}checked{% endif %}> New
+                Arrival</label>
+            <small>Products are new for 30 days by default</small>
+            <hr style="width: 100%;">
+
+            <label><input type="checkbox" name="in_stock" {% if product.in_stock %}checked{% endif %} disabled> In
+                Stock</label>
+            <small>Any product with at least 1 item in stock is In Stock</small>
+        </div>
+        <!-- Brand -->
+        <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" name="brand" id="brand" class="custom-input"
+                value="{{ form.brand.value|default_if_none:'' }}" placeholder="e.g. Nike, Adidas">
+        </div>
+        <!-- Material -->
+        <div class="form-group">
+            <label for="material">Material</label>
+            <input type="text" name="material" id="material" class="custom-input"
+                value="{{ form.material.value|default_if_none:'' }}" placeholder="e.g. Leather, Rubber">
+        </div>
+        <!-- Color -->
+        <div class="form-group">
+            <label for="color">Color</label>
+            <input type="text" name="color" id="color" class="custom-input"
+                value="{{ form.color.value|default_if_none:'' }}" placeholder='e.g. Black, White'>
+        </div>
+        <!-- Size -->
+        <div class="form-group">
+            <label for="size">Size</label>
+            <input type="text" name="size" id="size" class="custom-input"
+                value="{{ form.size.value|default_if_none:'' }}" placeholder="e.g. M, L, XL">
+        </div>
+        <!-- Quantity -->
+        <div class="form-group">
+            <label for="stock_quantity">Stock Quantity</label>
+            <input type="number" name="stock_quantity" id="stock_quantity" class="custom-input"
+                value="{{ form.stock_quantity.value|default_if_none:'' }}">
+        </div>
+
+        <button type="submit" class="submit-btn">Update Product</button>
+        <button type="button" class="cancel-btn"><a href="{% url 'stock_management' %}">Cancel</a></button>
+    </form>
+
+   
+     <!-- Delete Thumnail Modal -->
+     {% for thumbnail in thumbnails %}
+     <div class="thumbnail-delete-modal">
+        <div class="thumbnail-delete-modal-content">
+            <div class="thumbnail-delete-modal-header">
+                <h5 class="thumbnail-delete-modal-title">Confirm Deletion</h5>
+                <p class="cancel-delete-btn times" >&times;</p>
+            </div>
+              <hr>
+            <div class="thumbnail-delete-modal-body">
+                Are you sure you want to <strong>permanently delete</strong> this image?
+                <br><br>
+                <img src="{{ thumbnail.imageURL }}" alt="{{ product.name }}" width="80px">
+            </div>
+            <hr>
+            <div class="thumbnail-delete-modal-footer">
+            <form method="POST" 
+            action="{% url 'delete_thumbnail' thumbnail.id %}">
+                {% csrf_token %}
+                <button type="button" class="cancel-delete-btn" >No, take me back</button>
+                <button type="submit" class="confirm-delete-button">Yes, Delete</button>
+            </form>
+                
+            </div>
+        </div>
+     </div>
+    
+     {% endfor %}
+     <style>
+
+    .thumbnail-delete-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .thumbnail-delete-modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        border: 1px solid #888;
+        width: 50%;
+        max-width:500px;
+        border-radius: 5px;
+    }
+
+    .thumbnail-delete-modal-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.6rem;
+        padding: 0 1.2em;
+    }
+
+    .cancel-delete-btn.times {
+        cursor: pointer;
+    }
+
+    .thumbnail-delete-modal-body {
+        padding: .8em 1.2em;
+    }
+
+    .thumbnail-delete-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 1em 1.2em;
+    }
+
+    .thumbnail-delete-modal-footer button {
+        padding: 8px 10px;
+        margin-left: 1em;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .thumbnail-delete-modal-footer .cancel-delete-btn {
+        background-color: gray;
+    }
+
+    .confirm-delete-button {
+        background-color: rgb(179, 0, 0);
+    }
+
+     </style>
+
+
+
+    <!-- Modal for adding new category -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCategoryModal()">&times;</span>
+            <h3>Add New Category</h3>
+            <form id="categoryForm" method="post" action="{% url 'category_add_popup' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_name">Name*</label>
+                    <input type="text" name="name" id="id_name" class="custom-input" placeholder="e.g. Men's, Sneakers"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_parent">Parent</label>
+                    <select name="parent" id="id_parent" class="custom-input">
+                        <option value="">---------</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.get_full_path }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+                <div class="form-group">
+                    <label for="id_description">Description</label>
+                    <textarea name="description" id="id_description" class="custom-input" rows="3"
+                        placeholder="e.g. A comfortable shoes ..."></textarea>
+                    <small>A short description about the category</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_image">Image</label>
+                    <input type="file" name="image" id="id_image" class="custom-input">
+                    <small>Can be an image that represents the category</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
     </div>
-</div>
 </div>
 <style>
     .add-product-form-container {
@@ -408,6 +513,35 @@
         const modal = document.getElementById('categoryModal');
         if (event.target == modal) {
             closeCategoryModal();
+        }
+    }
+
+
+    
+    function closeDeleteModal() {
+        document.querySelector('.thumbnail-delete-modal').style.display = 'none';
+    }
+
+    const deleteThumbnailBtn = document.querySelectorAll('.delete-thumbnail-button');
+
+    deleteThumbnailBtn.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelector('.thumbnail-delete-modal').style.display = 'block';
+        })
+    });
+
+    document.querySelectorAll('.cancel-delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            closeDeleteModal()
+        })
+    });
+    
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+        const modal = document.querySelector('.thumbnail-delete-modal');
+        if (event.target == modal) {
+            closeDeleteModal();
         }
     }
 </script>

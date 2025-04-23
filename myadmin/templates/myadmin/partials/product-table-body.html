@@ -1,0 +1,25 @@
+{% for product in products %}
+<tr>
+    <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
+    <td>{{product.name}}</td>
+    <td>{{product.category}}</td>
+    <td>{{product.stock_quantity}}</td>
+    <td>${{product.price}}</td> 
+    {% if product.in_stock %}
+        {% if product.stock_quantity < 5 %} 
+        <td><span class="status less-stock">In Stock</span></td>
+        {% else %}
+        <td><span class="status in-stock">In Stock</span></td>
+        {% endif %}
+    {% else %}
+        <td><span class="status out-stock">Out of Stock</span></td>
+    {% endif %}
+    <td>
+        <a href="{% url 'product_item' product.slug %}"><button type="button">view</button></a>&nbsp;
+        <a href="{% url 'update_product' product.slug %}"><button type="button">Update</button></a>&nbsp;
+        <a href="{% url 'delete_product' product.slug %}"><button type="button">Delete</button></a>
+    </td>
+</tr>
+{% empty %}
+<tr><td colspan="7">No products found.</td></tr>
+{% endfor %}

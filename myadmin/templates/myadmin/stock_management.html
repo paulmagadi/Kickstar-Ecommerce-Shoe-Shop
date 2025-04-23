@@ -27,9 +27,10 @@
         
     </div>
     <div class="card">
-        <a href="{% url 'product_list' %}"><h5>Total products</h5></a>
+        <a href="{% url 'product_list' %}"><h5>All products</h5></a>
         
         <p>{{products|length}}</p>
+        <a href="{% url 'product_list' %}"><button>View</button></a>
     </div>
     <div class="card">
         <h5>Products in stock</h5>
@@ -41,6 +42,43 @@
         <p>{{listed_products|length}} / {{products|length}}</p>
     </div>
 </section>
+<br><br>
+
+<form method="GET" class="product-filters">
+    <select name="category">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.slug }}" {% if request.GET.category == cat.slug %}selected{% endif %}>
+            {{ cat.get_full_path }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <select name="brand">
+        <option value="">-- All Brands --</option>
+        <option value="none" {% if request.GET.brand == 'none' %}selected{% endif %}>No Brand</option>
+        {% for b in brands %}
+            <option value="{{ b }}" {% if request.GET.brand == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+    </select>
+    
+
+    <select name="stock">
+        <option value="">All Stock</option>
+        <option value="in" {% if request.GET.stock == 'in' %}selected{% endif %}>In Stock</option>
+        <option value="less" {% if request.GET.stock == 'less' %}selected{% endif %}>Bellow 5</option>
+        <option value="out" {% if request.GET.stock == 'out' %}selected{% endif %}>Out of Stock</option>
+    </select>
+
+    <select name="is_listed" id="is_listed">
+        <option value="">-- All --</option>
+        <option value="true" {% if request.GET.is_listed == 'true' %}selected{% endif %}>Listed</option>
+        <option value="false" {% if request.GET.is_listed == 'false' %}selected{% endif %}>Unlisted</option>
+    </select>
+
+    <button type="submit" disabled>Apply Filters</button>
+    <a href="{% url 'stock_management' %}"><button type="button" class="reset-btn">Reset Filters</button></a>
+</form>
 
 <section class="products-section">
     <h2>Product Inventory</h2>
@@ -59,43 +97,9 @@
             </tr>
         </thead>
 
-        {% for product in products %}
-        <tbody>
-            {% if product.in_stock %}
-            {% if product.stock_quantity < 5 %}
-            <tr>
-                <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
-                <td>{{product.name}}</td>
-                <td>{{product.category}}</td>
-                <td>{{product.stock_quantity}}</td>
-                <td>${{product.price}}</td>
-                <td><span class="status less-stock">In Stock</span></td>
-                <th>View</th>
-            </tr>
-            {% else %}
-            <tr>
-                <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
-                <td>{{product.name}}</td>
-                <td>{{product.category}}</td>
-                <td>{{product.stock_quantity}}</td>
-                <td>${{product.price}}</td>
-                <td><span class="status in-stock">In Stock</span></td>
-                <th>View</th>
-            </tr>
-            {% endif %}
-            {% else %}
-            <tr>
-                <td>P{{product.id}}-{{product.created_at.month}}-{{product.created_at.year}}</td>
-                <td>{{product.name}}</td>
-                <td>{{product.category}}</td>
-                <td>{{product.stock_quantity}}</td>
-                <td>${{product.price}}</td>
-                <td><span class="status out-stock">Out of Stock</span></td>
-                <th>View</th>
-            </tr>
-            {% endif %}
+        <tbody id="product-table-body">
+            {% include "myadmin/partials/product-table-body.html" %}
         </tbody>
-        {% endfor %}
     </table>
 
 
@@ -104,6 +108,18 @@
 
 
 <style>
+
+.product-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.product-filters select,
+.product-filters button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
 
 .cards {
         display: flex;
@@ -171,4 +187,23 @@
         font-size: 0.9em;
     }
 </style>
+
+<script>
+    document.querySelector('.product-filters').addEventListener('change', function() {
+        const form = this;
+        const params = new URLSearchParams(new FormData(form));
+    
+        fetch(`${form.action || window.location.pathname}?${params.toString()}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('product-table-body').innerHTML = data.html;
+        })
+        .catch(err => console.error("AJAX error:", err));
+    });
+    </script>
+    
 {% endblock content %}

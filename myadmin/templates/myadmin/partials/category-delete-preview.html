@@ -1,0 +1,27 @@
+<h3>Are you sure you want to permanently delete <strong style="color:red;">{{ category.name }}</strong>?</h3>
+
+<p>This action will also delete the following associated items:</p>
+{% if sub_categories %}
+    <p><strong>Subcategories:</strong></p>
+    <ul>
+        {% for subcat in sub_categories %}
+            <li>{{ subcat.get_full_path }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if products %}
+    <p><strong>Products:</strong></p>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+{% if not sub_categories and not products %}
+    <p>This category has no subcategories or products.</p>
+{% endif %}
+
+

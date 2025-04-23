@@ -1,8 +1,44 @@
+<form method="GET" class="product-filters">
+    <select name="category">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.slug }}" {% if request.GET.category == cat.slug %}selected{% endif %}>
+            {{ cat.get_full_path }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <select name="brand">
+        <option value="">-- All Brands --</option>
+        <option value="none" {% if request.GET.brand == 'none' %}selected{% endif %}>No Brand</option>
+        {% for b in brands %}
+            <option value="{{ b }}" {% if request.GET.brand == b %}selected{% endif %}>{{ b }}</option>
+        {% endfor %}
+    </select>
+    
+
+    <select name="stock">
+        <option value="">All Stock</option>
+        <option value="in" {% if request.GET.stock == 'in' %}selected{% endif %}>In Stock</option>
+        <option value="less" {% if request.GET.stock == 'less' %}selected{% endif %}>Bellow 5</option>
+        <option value="out" {% if request.GET.stock == 'out' %}selected{% endif %}>Out of Stock</option>
+    </select>
+
+    <select name="is_listed" id="is_listed">
+        <option value="">-- All --</option>
+        <option value="true" {% if request.GET.is_listed == 'true' %}selected{% endif %}>Listed</option>
+        <option value="false" {% if request.GET.is_listed == 'false' %}selected{% endif %}>Unlisted</option>
+    </select>
+
+    <button type="submit">Apply Filters</button>
+    <a href="{% url 'product_list' %}"><button type="button" class="reset-btn">Reset Filters</button></a>
+</form>
 
 <section class="products-section">
     <h2>Product Inventory</h2>
 <p>Table view</p>
 <p>Grid View</p>
+<p>List View</p>
     {% if products %}
     <table class="products-table">
         <thead>
@@ -12,6 +48,7 @@
                 <th>Category</th>
                 <th>Stock</th>
                 <th>Price</th>
+                <th>Listed</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -19,48 +56,29 @@
 
         {% for product in products %}
         <tbody>
-            {% if product.in_stock %}
-            {% if product.stock_quantity < 5 %} <tr>
+            <tr>
                 <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
                 <td>{{product.name}}</td>
                 <td>{{product.category}}</td>
                 <td>{{product.stock_quantity}}</td>
                 <td>${{product.price}}</td> 
+                <td>{{product.is_listed}}</td>
+                {% if product.in_stock %}
+                {% if product.stock_quantity < 5 %} 
                 <td><span class="status less-stock">In Stock</span></td>
-                <td><a href="{% url 'product_item' product.slug %}">view</a></td>
-                <td><a href="{% url 'update_product' product.slug %}">Update</a></td>
-                <td><a href="{% url 'delete_product' product.slug %}">Delete</a></td>
-                </tr>
                 {% else %}
-                <tr>
-                    <td>P{{product.id}}-{{product.created_at.month}}{{product.created_at.year}}</td>
-                    <td>{{product.name}}</td>
-                    <td>{{product.category}}</td>
-                    <td>{{product.stock_quantity}}</td>
-                    <td>${{product.price}}</td>
-                    <td><span class="status in-stock">In Stock</span></td>
-                    <td><a href="{% url 'product_item' product.slug %}">view</a></td>
-                    <td><a href="{% url 'update_product' product.slug %}">Update</a></td>
-                    <td><a href="{% url 'delete_product' product.slug %}">Delete</a></td>
-                </tr>
+                <td><span class="status in-stock">In Stock</span></td>
                 {% endif %}
                 {% else %}
-                <tr>
-                    <td>P{{product.id}}-{{product.created_at.month}}-{{product.created_at.year}}</td>
-                    <td>{{product.name}}</td>
-                    <td>{{product.category}}</td>
-                    <td>{{product.stock_quantity}}</td>
-                    <td>${{product.price}}</td>
-                    <td><span class="status out-stock">Out of Stock</span></td>
-                    <td><a href="{% url 'product_item' product.slug %}">view</a></td>
-                    <td><a href="{% url 'update_product' product.slug %}">Update</a></td>
-                    <td><a href="{% url 'delete_product' product.slug %}">Delete</a></td>
-                </tr>
+                <td><span class="status out-stock">Out of Stock</span></td>
                 {% endif %}
+                <td><a href="{% url 'product_item' product.slug %}"><button type="button">view</button></a>&nbsp;
+                <a href="{% url 'update_product' product.slug %}"><button type="button">Update</button></a>&nbsp;
+                <a href="{% url 'delete_product' product.slug %}"><button type="button">Delete</button></a></td>
+            </tr>
         </tbody>
         {% endfor %}
     </table>
-
 
     {% endif %}
 </section>
@@ -69,6 +87,19 @@
   
 
 <style>
+
+.product-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.product-filters select,
+.product-filters button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
     .products-section {
         margin-top: 30px;
         background: white;

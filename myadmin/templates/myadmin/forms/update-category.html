@@ -1,0 +1,318 @@
+{% extends 'myadmin/partials/base.html' %}
+
+{% block content %}
+<header class="topbar">
+    <h1>Add Category To Store</h1>
+</header>
+<div class="add-category-form-container">
+<form method="POST" action="{% url 'update_category' category.slug %}" enctype="multipart/form-data" class="custom-form">
+    {% csrf_token %}
+    <!-- Category Name -->
+    <div class="form-group">
+        <label for="name">Name*</label>
+        <input type="text" name="name" id="name" class="custom-input" value="{{ category.name|default_if_none:'' }}"
+            placeholder="e.g. Men's, Sneakers">
+        {% for error in form.name.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <!-- Parent  -->
+    <!-- Parent Category Field -->
+    <div class="form-group">
+        <label for="parent">Parent Category</label>
+        <select name="parent" id="parent" class="custom-input">
+            <option value="">---------</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}"
+                    {% if form.instance.parent and form.instance.parent.id == category.id %}
+                        selected
+                    {% endif %}
+                >
+                    {{ category.get_full_path }}
+                </option>
+            {% endfor %}
+        </select>
+
+
+        <!-- Button to open modal -->
+        <button type="button" onclick="openCategoryModal()" class="add-new-category-button">
+            + Add New Category
+        </button>
+        <small>You can add a new category if it doesn't exist already</small>
+
+        {% if form.category.errors %}
+        <div class="error-message">
+            {% for error in form.category.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Key words -->
+    <div class="form-group">
+        <label for="id_key_words">Keywords</label>
+        <input type="text" name="key_words" id="key_words" class="custom-input">
+    </div>
+
+    <!-- Description  -->
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea name="description" id="description" rows="3" class="custom-input" 
+         placeholder="e.g. A comfortable shoes ...">{{ category.description|default_if_none:'' }}</textarea>
+    </div>
+
+    <!-- Image  -->
+    <div class="form-group">
+        <label for="image">Image</label>
+        <input type="file" name="image" id="image" class="custom-input">
+    </div>
+
+    <button type="submit" class="submit-btn">Update Category</button> &nbsp;
+    <button type="button" class="cancel-btn"><a href="{% url 'category_list' %}">Cancel</a></button>
+</form>
+
+
+
+<!-- Modal for adding new category -->
+<div id="categoryModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCategoryModal()">&times;</span>
+        <h3>Add New Category</h3>
+        <form id="categoryForm" method="post" action="{% url 'category_add_popup' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_name">Name*</label>
+                <input type="text" name="name" id="id_name" class="custom-input" required placeholder="e.g. Men's, Sneakers">
+            </div>
+            <div class="form-group">
+                <label for="id_parent">Parent</label>
+                <select name="parent" id="id_parent" class="custom-input">
+                    <option value="">---------</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.get_full_path }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div class="form-group">
+                <label for="id_description">Description</label>
+                <textarea name="description" id="id_description" class="custom-input" rows="3"  placeholder="e.g. A comfortable shoes ..."></textarea>
+                <small>A short description about the category</small>
+            </div>
+
+            <div class="form-group">
+                <label for="id_image">Image</label>
+                <input type="file" name="image" id="id_image" class="custom-input">
+                <small>Can be an image that represents the category</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+</div>
+<style>
+    .add-category-form-container {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1em;
+    }
+
+    .modal {
+        display: none ;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        max-width: 600px;
+        border-radius: 5px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: black;
+    }
+</style>
+
+<style>
+    .custom-form {
+        max-width: 800px;
+        margin: auto;
+        background-color: #fff;
+        padding: 1.2em;
+        border-radius: 8px;
+        border: 1px solid rgb(167, 166, 166);
+    }
+
+    .form-group {
+        margin-bottom: 2em;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 1em;
+        background-color: #cccccc40;
+        border-radius: 6px;
+    }
+
+    .custom-input,
+    .custom-input-file,
+    select.custom-input,
+    textarea.custom-input {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .custom-input:focus,
+    textarea.custom-input:focus,
+    select.custom-input:focus {
+        border-color: #1a73e8;
+        outline: none;
+    }
+
+    .add-new-category-button {
+        background-color: #1a73e8;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: fit-content;
+        margin-top: 5px;
+    }
+
+    .submit-btn {
+        background-color: #1a73e8;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #0049b7;
+    }
+
+    .cancel-btn {
+        background-color: red;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .cancel-btn:hover {
+        background-color: rgba(199, 5, 5, 0.811)
+    }
+
+    .cancel-btn a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 15px;
+    }
+</style>
+
+<script>
+    // Modal functions
+    function openCategoryModal() {
+        document.getElementById('categoryModal').style.display = 'block';
+    }
+
+    function closeCategoryModal() {
+        document.getElementById('categoryModal').style.display = 'none';
+    }
+
+    // Handle form submission via AJAX
+    document.getElementById('categoryForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Add new option to parent select
+                    const parentSelect = document.getElementById('parent');
+                    const newOption = new Option(data.category.name, data.category.id);
+                    parentSelect.add(newOption);
+                    parentSelect.value = data.category.id;
+
+                    // Also update the modal's parent select if needed
+                    const modalParentSelect = document.getElementById('id_parent');
+                    const newModalOption = new Option(data.category.name, data.category.id);
+                    modalParentSelect.add(newModalOption);
+
+                    closeCategoryModal();
+                } else {
+                    alert('Error: ' + (data.error || 'Could not add category'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            });
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+        const modal = document.getElementById('categoryModal');
+        if (event.target == modal) {
+            closeCategoryModal();
+        }
+    }
+</script>
+{% endblock content %}
