@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -8,6 +9,14 @@ from store.models import Category, Product, Thumbnail
 from users.models import CustomUser
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.contrib import messages
+
+
+from django.db.models.functions import TruncDate
+from django.db.models import Count
+import json
+from django.db.models import Q
+
+
 
 
 def dashboard(request):
@@ -44,6 +53,14 @@ def stock_management(request):
 
     stock = request.GET.get('stock')
     is_listed = request.GET.get('is_listed')
+
+    search_query = request.GET.get('search')
+
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)  # optional
+        )
 
     if category:
         selected_category = get_object_or_404(Category, slug=category)
@@ -95,9 +112,18 @@ def product_list(request):
     # Filters
     category = request.GET.get('category')
     brand = request.GET.get('brand')
-
     stock = request.GET.get('stock')
     is_listed = request.GET.get('is_listed')
+    is_sale = request.GET.get('is_sale')
+    
+    search_query = request.GET.get('search')
+
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(id__icontains=search_query) 
+        )
+
 
     if category:
         products = products.filter(category__slug=category)
@@ -118,12 +144,64 @@ def product_list(request):
         products = products.filter(is_listed=True)
     elif is_listed == 'false':
         products = products.filter(is_listed=False)
+    
+    if is_sale == 'true':
+        products = products.filter(is_sale=True)
+    elif is_sale == 'false':
+        products = products.filter(is_sale=False)
         
+    date_range = request.GET.get('date_range')
+
+    if date_range:
+        try:
+            start_str, end_str = date_range.split(' to ')
+            start_date = datetime.strptime(start_str.strip(), '%Y-%m-%d')
+            end_date = datetime.strptime(end_str.strip(), '%Y-%m-%d')
+            products = products.filter(created_at__date__range=(start_date, end_date))
+        except ValueError:
+            pass
+    
+    
+    specific_date = request.GET.get('specific_date')
+
+    if specific_date:
+        try:
+            date_obj = datetime.strptime(specific_date.strip(), '%Y-%m-%d').date()
+            products = products.filter(created_at__date=date_obj)
+        except ValueError:
+            pass
+        
+    
+    calendar_date = request.GET.get('calendar')
+        
+    if calendar_date and calendar_date.lower() != "none":
+        try:
+            valid_date = datetime.strptime(calendar_date, "%Y-%m-%d").date()
+            products = products.filter(created_at__date=valid_date)
+        except ValueError:
+            messages.warning(request, "Invalid date format provided.")
+
+    # Count of products per day for calendar
+    product_counts = (
+        Product.objects
+        .annotate(created_day=TruncDate('created_at'))
+        .values('created_day')
+        .annotate(count=Count('id'))
+        .order_by('-created_day')
+    )
+    date_counts = {str(entry['created_day']): entry['count'] for entry in product_counts}
+    
+    view_mode = request.GET.get('view', 'table')
 
     context = {
         'products': products,
         'categories': Category.objects.all(),
-        'brands': Product.objects.exclude(brand__isnull=True).values_list('brand', flat=True).distinct()
+        'brands': Product.objects.exclude(brand__isnull=True).values_list('brand', flat=True).distinct(),
+        'date_range': date_range,
+        'specific_date': specific_date,
+        'date_counts_json': json.dumps(date_counts),
+        'selected_date': calendar_date,
+        'view_mode': view_mode,
         
     }
     return render(request, 'myadmin/product-list.html', context)
@@ -331,3 +409,25 @@ def category_delete_preview(request, slug):
     return HttpResponse(html)
 
 
+import csv
+from django.http import HttpResponse
+
+def export_full_products_csv(request):
+    # Create the HttpResponse with CSV header
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="all_products_export.csv"'
+
+    writer = csv.writer(response)
+
+    # Get all fields from the model
+    fields = [field.name for field in Product._meta.fields]
+
+    # Write the header row
+    writer.writerow(fields)
+
+    # Write product rows
+    for product in Product.objects.all():
+        row = [getattr(product, field) for field in fields]
+        writer.writerow(row)
+
+    return response

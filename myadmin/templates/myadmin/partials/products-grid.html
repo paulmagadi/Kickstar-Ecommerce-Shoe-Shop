@@ -1,0 +1,116 @@
+
+<div class="product-grid">
+  {% for product in products %}
+    <div class="product-card">
+      <img src="{{ product.imageURL }}" alt="{{ product.name }}" class="product-image">
+      <div class="product-info">
+        <h4>{{ product.name }}</h4>
+        <p>Category: {{ product.category }}</p>
+        <p>Stock: {{ product.stock_quantity }}</p>
+        <p>Price: ${{ product.price }}</p>
+        <a href="{% url 'product_item' product.slug %}">View</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+
+<style>
+  /* Shared Styles */
+.product-grid, .product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Grid View Styling */
+.product-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  width: calc(25% - 1.5rem);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.product-info h4 {
+  margin: 0.25rem 0;
+}
+
+.product-info p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 2px 0;
+}
+
+.product-info a {
+  margin-top: 0.5rem;
+  display: inline-block;
+  color: #007bff;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* List View Styling */
+.product-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.list-thumbnail {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.list-details h4 {
+  margin: 0 0 5px;
+}
+
+.list-details p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.actions button {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.actions button:hover {
+  background-color: #0056b3;
+}
+
+</style>

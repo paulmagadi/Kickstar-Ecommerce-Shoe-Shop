@@ -76,6 +76,19 @@
         <option value="false" {% if request.GET.is_listed == 'false' %}selected{% endif %}>Unlisted</option>
     </select>
 
+    <div class="search-wrapper">
+        <input 
+          type="text" 
+          name="search" 
+          class="custom-input search-input" 
+          placeholder="Search products..." 
+          value="{{ request.GET.search|default_if_none:'' }}"
+          id="product-search-input"
+        >
+        <button type="submit" class="search-btn">🔍</button>
+      </div>
+      
+
     <button type="submit" disabled>Apply Filters</button>
     <a href="{% url 'stock_management' %}"><button type="button" class="reset-btn">Reset Filters</button></a>
 </form>
@@ -113,6 +126,7 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 .product-filters select,
 .product-filters button {
@@ -120,6 +134,31 @@
     border-radius: 4px;
     border: 1px solid #ccc;
 }
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.search-input {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.search-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
 
 .cards {
         display: flex;
@@ -205,5 +244,20 @@
         .catch(err => console.error("AJAX error:", err));
     });
     </script>
+
+<script>
+    let timeout = null;
+    const input = document.getElementById('product-search-input');
+  
+    if (input) {
+      input.addEventListener('input', function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          this.form.submit();
+        }, 500); // wait 0.5s before submitting
+      });
+    }
+  </script>
+  
     
 {% endblock content %}

@@ -1,0 +1,318 @@
+
+{% if products %}
+<div id="toggle-controls">
+    <button type="button" id="show-all">Show All</button>
+    <button type="button" id="hide-all">Hide All</button>
+  </div>
+
+  <button id="exportCSV" class="btn-export">Export Visible Columns to CSV</button>
+  <br>
+  <button id="openExportModal" class="btn-export">Export to CSV</button>
+  <br>
+<div id="column-controls">
+    <label><input type="checkbox" data-column="product-id" checked> Product ID</label>
+    <label><input type="checkbox" data-column="name" checked> Name</label>
+    <label><input type="checkbox" data-column="category" checked> Category</label>
+    <label><input type="checkbox" data-column="stock" checked> Stock</label>
+    <label><input type="checkbox" data-column="price" checked> Price</label>
+    <label><input type="checkbox" data-column="listed" checked> Listed</label>
+    <label><input type="checkbox" data-column="status" checked> Status</label>
+    <label><input type="checkbox" data-column="action" checked> Action</label>
+
+    <!-- Optional columns (unchecked) -->
+    <label><input type="checkbox" data-column="description"> Description</label>
+    <label><input type="checkbox" data-column="brand"> Brand</label>
+    <label><input type="checkbox" data-column="color"> Color</label>
+    <label><input type="checkbox" data-column="size"> Size</label>
+    <label><input type="checkbox" data-column="discount"> Discount</label>
+    <label><input type="checkbox" data-column="created-at"> Created</label>
+    <label><input type="checkbox" data-column="updated-at"> Updated</label>
+    <label><input type="checkbox" data-column="is-sale"> On Sale?</label>
+    <label><input type="checkbox" data-column="slug"> Slug</label>
+</div>
+    <table class="products-table">
+        <thead>
+            <tr>
+                <th class="col-product_id">Product ID</th>
+                <th class="col-name">Name</th>
+                <th class="col-category">Category</th>
+                <th class="col-stock">Stock</th>
+                <th class="col-price">Price</th>
+                <th class="col-listed">Listed</th>
+                <th class="col-status">Status</th>
+                <th class="col-action">Action</th>
+
+                <th class="col-description" style="display: none;">Description</th>
+                <th class="col-brand" style="display: none;">Brand</th>
+                <th class="col-color" style="display: none;">Color</th>
+                <th class="col-size" style="display: none;">Size</th>
+                <th class="col-discount" style="display: none;">Discount</th>
+                <th class="col-created-at" style="display: none;">Created</th>
+                <th class="col-updated-at" style="display: none;">Updated</th>
+                <th class="col-is-sale" style="display: none;">On Sale?</th>
+                <th class="col-slug" style="display: none;">Slug</th>
+
+            </tr>
+        </thead>
+
+        {% for product in products %}
+        <tbody>
+            <tr>
+                <td class="col-product-id">P{{product.id}}</td>
+                <td class="col-name">{{product.name}}</td>
+                <td class="col-category">{{product.category}}</td>
+                <td class="col-stock">{{product.stock_quantity}}</td>
+                <td class="col-price">${{product.price}}</td>
+                <td class="col-listed">{% if product.is_listed %}Yes{% else %}No{% endif %}</td>
+                {% if product.in_stock %}
+                {% if product.stock_quantity < 5 %} 
+                <td class="col-status"><span class="status less-stock">In Stock</span></td>
+                    {% else %}
+                    <td class="col-status"><span class="status in-stock">In Stock</span></td>
+                    {% endif %}
+                    {% else %}
+                    <td class="col-status"><span class="status out-stock">Out of Stock</span></td>
+                    {% endif %}
+                    <td class="col-action">
+                        <a href="{% url 'product_item' product.slug %}"><button type="button">View</button></a>&nbsp;
+                        <a href="{% url 'update_product' product.slug %}"><button
+                                type="button">Update</button></a>&nbsp;
+                        <a href="{% url 'delete_product' product.slug %}"><button type="button">Delete</button></a>
+                    </td>
+                   
+                <td class="col-description" style="display: none;">{{ product.description }}</td>
+                <td class="col-brand" style="display: none;">{{ product.brand }}</td>
+                <td class="col-color" style="display: none;">{{ product.color }}</td>
+                <td class="col-size" style="display: none;">{{ product.size }}</td>
+                <td class="col-discount" style="display: none;">{{ product.discount }}%</td>
+                <td class="col-created-at" style="display: none;">{{ product.created_at|date:"Y-m-d" }}</td>
+                <td class="col-updated-at" style="display: none;">{{ product.updated_at|date:"Y-m-d" }}</td>
+                <td class="col-is-sale" style="display: none;">{% if product.is_sale %}Yes{% else %}No{% endif %}</td>
+                <td class="col-slug" style="display: none;">{{ product.slug }}</td>
+                    
+            </tr>
+            
+        </tbody>
+        {% endfor %}
+        
+    </table>
+    {% else %}
+    <table class="products-table">
+        <tr><td></td></tr>
+        <tbody><tr><td colspan="7">No products found.</td></tr></tbody>
+        
+    </table>
+    {% endif %}
+
+
+
+    <div id="exportModal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2>Select Columns to Export</h2>
+          <form id="exportForm">
+            <label><input type="checkbox" id="selectAllExport" checked> <strong>Select All</strong></label><br>
+            <label><input type="checkbox" class="export-checkbox" value="product-id" checked> Product ID</label><br>
+            <label><input type="checkbox" class="export-checkbox" value="name" checked> Name</label><br>
+            <label><input type="checkbox" class="export-checkbox" value="category"> Category</label><br>
+            <label><input type="checkbox" class="export-checkbox" value="stock"> Stock</label><br>
+            <label><input type="checkbox" class="export-checkbox" value="price"> Price</label><br>
+            <label><input type="checkbox" class="export-checkbox" value="listed"> Listed</label><br>
+            <label><input type="checkbox" class="export-checkbox" value="status"> Status</label><br>
+            <!-- <label><input type="checkbox" class="export-checkbox" value="action" disabled> Action</label><br> -->
+            <br>
+            <button type="submit" class="btn-export">Download CSV</button>
+            <button type="button" id="closeExportModal" class="btn-cancel">Cancel</button>
+          </form>
+        </div>
+    </div>
+      
+<style>
+    .modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.hidden {
+  display: none;
+}
+
+.btn-export, .btn-cancel {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0.25rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+</style>
+      
+
+    <script>
+        const columnToggles = document.querySelectorAll('#column-controls input[type="checkbox"]');
+      
+        document.getElementById('show-all').addEventListener('click', () => {
+          columnToggles.forEach(cb => {
+            cb.checked = true;
+            toggleColumn(cb.dataset.column, true);
+          });
+        });
+      
+        document.getElementById('hide-all').addEventListener('click', () => {
+          columnToggles.forEach(cb => {
+            cb.checked = false;
+            toggleColumn(cb.dataset.column, false);
+          });
+        });
+      
+        function toggleColumn(columnClass, show) {
+          const cells = document.querySelectorAll('.col-' + columnClass);
+          cells.forEach(cell => {
+            cell.style.display = show ? '' : 'none';
+          });
+          // Optional: update localStorage to persist state
+        }
+      </script>
+      
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('#column-controls input[type="checkbox"]');
+            const tableColumns = document.querySelectorAll('.products-table th, .products-table td');
+        
+            // Apply saved preferences
+            checkboxes.forEach(checkbox => {
+                const columnClass = `col-${checkbox.dataset.column}`;
+                const savedState = localStorage.getItem(columnClass);
+                if (savedState === 'false') {
+                    checkbox.checked = false;
+                    toggleColumn(columnClass, false);
+                } else if (savedState === 'true') {
+                    checkbox.checked = true;
+                    toggleColumn(columnClass, true);
+                }
+            });
+        
+            // Toggle columns on checkbox change
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const columnClass = `col-${checkbox.dataset.column}`;
+                    toggleColumn(columnClass, checkbox.checked);
+                    localStorage.setItem(columnClass, checkbox.checked);
+                });
+            });
+        
+            function toggleColumn(className, show) {
+                document.querySelectorAll(`.${className}`).forEach(el => {
+                    el.style.display = show ? '' : 'none';
+                });
+            }
+        });
+        </script>
+
+<script>
+    document.getElementById('exportCSV').addEventListener('click', function () {
+  const table = document.querySelector('.products-table');
+  const rows = table.querySelectorAll('tr');
+  const csv = [];
+
+  // List of column names you want to exclude from export
+  const excludeCols = ['Action'];
+
+  const visibleCols = Array.from(rows[0].children)
+    .map((th, i) => ({ name: th.textContent.trim(), index: i }))
+    .filter(col => {
+      // Skip excluded column names
+      if (excludeCols.includes(col.name)) return false;
+
+      const classList = rows[0].children[col.index].classList;
+      return Array.from(classList).every(cl => {
+        return !document.querySelector(`#column-controls input[data-column="${cl.replace('col-', '')}"]`)?.checked === false;
+      });
+    });
+
+  rows.forEach(row => {
+    const cols = Array.from(row.children)
+      .filter((_, i) => visibleCols.map(v => v.index).includes(i))
+      .map(td => `"${td.textContent.trim()}"`);
+    csv.push(cols.join(','));
+  });
+
+  downloadCSV(csv.join('\n'), 'products_export.csv');
+});
+
+function downloadCSV(csv, filename) {
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const link = document.createElement('a');
+
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+</script>
+  
+  <script>
+    const modal = document.getElementById('exportModal');
+    const openBtn = document.getElementById('openExportModal');
+    const closeBtn = document.getElementById('closeExportModal');
+    const form = document.getElementById('exportForm');
+  
+    openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+  
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const selected = Array.from(form.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+  
+      const table = document.querySelector('.products-table');
+      const rows = table.querySelectorAll('tr');
+      const csv = [];
+  
+      const headerCells = rows[0].children;
+      const indexes = Array.from(headerCells)
+        .map((th, i) => ({ name: th.textContent.trim().toLowerCase().replace(/\s/g, '-'), index: i }))
+        .filter(col => selected.includes(col.name));
+  
+      rows.forEach(row => {
+        const cols = Array.from(row.children)
+          .filter((_, i) => indexes.map(c => c.index).includes(i))
+          .map(td => `"${td.textContent.trim()}"`);
+        csv.push(cols.join(','));
+      });
+  
+      downloadCSV(csv.join('\n'), 'custom_export.csv');
+      modal.classList.add('hidden');
+    });
+  
+    function downloadCSV(csv, filename) {
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    const selectAllCheckbox = document.getElementById('selectAllExport');
+    const exportCheckboxes = document.querySelectorAll('.export-checkbox');
+
+    selectAllCheckbox.addEventListener('change', function () {
+    exportCheckboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+    });
+
+  </script>
+  

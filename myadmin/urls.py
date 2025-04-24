@@ -21,4 +21,6 @@ urlpatterns = [
     path('category/delete/<str:slug>/', views.delete_category, name='delete_category'),
     path('category/delete-preview/<slug:slug>/', views.category_delete_preview, name='category_delete_preview'),
     path('category/add-popup/', views.CategoryAddPopupView.as_view(), name='category_add_popup'),
+    path('export/full-products/', views.export_full_products_csv, name='export_full_products_csv'),
+
 ]
