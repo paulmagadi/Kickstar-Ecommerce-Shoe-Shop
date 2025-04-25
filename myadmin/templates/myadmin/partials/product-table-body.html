@@ -7,12 +7,12 @@
     <td>${{product.price}}</td> 
     {% if product.in_stock %}
         {% if product.stock_quantity < 5 %} 
-        <td><span class="status less-stock">In Stock</span></td>
+        <td><span class="status less-stock">In stock</span></td>
         {% else %}
-        <td><span class="status in-stock">In Stock</span></td>
+        <td><span class="status in-stock">In stock</span></td>
         {% endif %}
     {% else %}
-        <td><span class="status out-stock">Out of Stock</span></td>
+        <td><span class="status out-stock">No stock</span></td>
     {% endif %}
     <td>
         <a href="{% url 'product_item' product.slug %}"><button type="button">view</button></a>&nbsp;

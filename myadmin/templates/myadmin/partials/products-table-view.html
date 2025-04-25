@@ -66,12 +66,12 @@
                 <td class="col-listed">{% if product.is_listed %}Yes{% else %}No{% endif %}</td>
                 {% if product.in_stock %}
                 {% if product.stock_quantity < 5 %} 
-                <td class="col-status"><span class="status less-stock">In Stock</span></td>
+                <td class="col-status"><span class="status less-stock">In stock</span></td>
                     {% else %}
-                    <td class="col-status"><span class="status in-stock">In Stock</span></td>
+                    <td class="col-status"><span class="status in-stock">In stock</span></td>
                     {% endif %}
                     {% else %}
-                    <td class="col-status"><span class="status out-stock">Out of Stock</span></td>
+                    <td class="col-status"><span class="status out-stock">No stock</span></td>
                     {% endif %}
                     <td class="col-action">
                         <a href="{% url 'product_item' product.slug %}"><button type="button">View</button></a>&nbsp;
@@ -125,6 +125,7 @@
           </form>
         </div>
     </div>
+    
       
 <style>
     .modal-overlay {

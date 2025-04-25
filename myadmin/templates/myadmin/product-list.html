@@ -79,11 +79,11 @@
 
 
 {% if view_mode == 'grid' %}
-    {% include 'myadmin/partials/products-grid.html' %}
+    {% include 'myadmin/partials/products-grid-view.html' %}
 {% elif view_mode == 'list' %}
-    {% include 'myadmin/partials/products-list.html' %}
+    {% include 'myadmin/partials/products-list-view.html' %}
 {% else %}
-    {% include 'myadmin/partials/products-table.html' %}
+    {% include 'myadmin/partials/products-table-view.html' %}
 {% endif %}
 
 
