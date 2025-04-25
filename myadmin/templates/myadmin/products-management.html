@@ -6,13 +6,6 @@
     <h1>Products Inventory Management</h1>
 </header>
 
-<nav>
-    <ul>
-        <a href="{% url 'product_list' %}">Products</a>
-        <a href="{% url 'category_list' %}">Categories</a>
-    </ul>
-</nav>
-
 <section class="cards">
     <div class="card">
         <a href="{% url 'add_product' %}">
@@ -31,6 +24,13 @@
         
         <p>{{products|length}}</p>
         <a href="{% url 'product_list' %}"><button>View</button></a>
+    </div>
+
+    <div class="card">
+        <a href="{% url 'category_list' %}"><h5>All Categories</h5></a>
+        
+        <p>{{products|length}}</p>
+        <a href="{% url 'category_list' %}"><button>View</button></a>
     </div>
     <div class="card">
         <h5>Products in stock</h5>
@@ -90,11 +90,11 @@
       
 
     <button type="submit" disabled>Apply Filters</button>
-    <a href="{% url 'stock_management' %}"><button type="button" class="reset-btn">Reset Filters</button></a>
+    <a href="{% url 'products_management' %}"><button type="button" class="reset-btn">Reset Filters</button></a>
 </form>
 
 <section class="products-section">
-    <h2>Product Inventory</h2>
+    <h2>Latest Products</h2>
 
     {% if products %}
     <table class="products-table">

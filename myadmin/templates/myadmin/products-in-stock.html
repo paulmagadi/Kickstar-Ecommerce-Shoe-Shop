@@ -1,13 +1,7 @@
-{% extends 'myadmin/partials/base.html' %}
-
-
-{% block content %}
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <form method="GET" class="product-filters">
-    <div class="form-group">
-        <label for="categories">Categories</label>
     <select name="category">
         <option value="">All Categories</option>
         {% for cat in categories %}
@@ -16,10 +10,7 @@
         </option>
         {% endfor %}
     </select>
-    </div>
 
-    <div class="form-group">
-        <label for="brand">Brands</label>
     <select name="brand">
         <option value="">-- Brands --</option>
         <option value="none" {% if request.GET.brand == 'none' %}selected{% endif %}>No Brand</option>
@@ -27,71 +18,50 @@
         <option value="{{ b }}" {% if request.GET.brand == b %}selected{% endif %}>{{ b }}</option>
         {% endfor %}
     </select>
-    </div>
 
 
-    <div class="form-group">
-        <label for="stock">Stock</label>
     <select name="stock">
         <option value="">-- Stock --</option>
         <option value="in" {% if request.GET.stock == 'in' %}selected{% endif %}>In Stock</option>
         <option value="less" {% if request.GET.stock  == 'less' %}selected{% endif %}>Bellow 5</option>
         <option value="out" {% if request.GET.stock == 'out' %}selected{% endif %}>Out of Stock</option>
     </select>
-    </div>
 
-    <div class="form-group">
-        <label for="is_listed">Listing</label>
     <select name="is_listed" id="is_listed">
         <option value="">-- Listing --</option>
         <option value="true" {% if request.GET.is_listed == 'true' %}selected{% endif %}>Listed</option>
         <option value="false" {% if request.GET.is_listed == 'false' %}selected{% endif %}>Unlisted</option>
     </select>
-    </div>
 
-    <div class="form-group">
-        <label for="is_sale">Sale</label>
     <select name="is_sale" id="is_sale">
         <option value="">-- Sale --</option>
         <option value="true" {% if request.GET.is_sale == 'true' %}selected{% endif %}>Discounted</option>
         <option value="false" {% if request.GET.is_sale == 'false' %}selected{% endif %}>No Discount</option>
     </select>
-    </div>
 
-    <div class="form-group">
-        <label for="date_range">Date Range</label>
     <input type="text" id="date_range" name="date_range" class="custom-input" 
        value="{{ date_range|default_if_none:'' }}" placeholder="Select Date Range">
-    </div>
 
-    <!-- <label for="specific_date">Date</label>
     <input type="text" id="specific_date" name="specific_date" class="custom-input" 
-        value="{{ specific_date|default_if_none:'' }}" placeholder="Select Date"> -->
-    
-    <div class="form-group">
-        <label for="calendar">Calendar: </label>
+        value="{{ specific_date|default_if_none:'' }}" placeholder="Select Date">
+
     <input type="text" name="calendar" id="calendar" class="custom-input" 
         value="{{ selected_date|default_if_none:'' }}" placeholder="Select date" />
-        <div class="calendar-legend">
-            <small><span style="background:red;" class="legend-dot"></span> 6+ products</small>
-            <small><span style="background:orange;" class="legend-dot"></span> 3–5 products</small>
-            <small><span style="background:lightgreen;" class="legend-dot"></span> 1–2 products</small>
-        </div>
-    </div>
 
-    <div class="form-group">
-        <div class="search-wrapper">
-            <input type="text" name="search" class="custom-input search-input" placeholder="Search products..." value="{{ request.GET.search|default_if_none:'' }}">
-            <button type="submit" class="search-btn">🔍</button>
-        </div>
+    <div class="search-wrapper">
+        <input type="text" name="search" class="custom-input search-input" placeholder="Search products..." value="{{ request.GET.search|default_if_none:'' }}">
+        <button type="submit" class="search-btn">🔍</button>
     </div>
           
-
     <button type="submit">Apply Filters</button>
     <a href="{% url 'product_list' %}"><button type="button" class="reset-btn">Reset Filters</button></a>
 </form>
 
-    
+    <div class="calendar-legend">
+        <small><span style="background:red;" class="legend-dot"></span> 6+ products</small>
+        <small><span style="background:orange;" class="legend-dot"></span> 3–5 products</small>
+        <small><span style="background:lightgreen;" class="legend-dot"></span> 1–2 products</small>
+    </div>
 
 <section class="products-section">
     <div class="view-toggle">
@@ -123,12 +93,47 @@
 
 
 <style>
- 
+    .flatpickr-day.red {
+    background: #ff6961;
+    color: white;
+    border-radius: 50%;
+}
+.flatpickr-day.orange {
+    background: #fcbf49;
+    color: black;
+    border-radius: 50%;
+}
+.flatpickr-day.lightgreen {
+    background: #90ee90;
+    color: black;
+    border-radius: 50%;
+}
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
 
 </style>
 
 
 <style>
+    .product-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .product-filters select,
+    .product-filters button {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
     .products-section {
         background: white;
         padding: 20px;
@@ -188,47 +193,40 @@
     flatpickr("#date_range", {
       mode: "range",
       dateFormat: "Y-m-d"
+    //   inline: true
     });
   </script>
 
-<!-- <script>
+<script>
     flatpickr("#specific_date", {
       dateFormat: "Y-m-d"
     });
-  </script> -->
+  </script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const dateCounts = JSON.parse('{{ date_counts_json|safe }}');
-
-    function getColor(count) {
-      if (count >= 6) return 'red';
-      if (count >= 3) return 'orange';
-      if (count >= 1) return 'lightgreen';
-      return '';
-    }
-
-    flatpickr("#calendar", {
-      dateFormat: "Y-m-d",
-      allowInput: true,
-    //   inline: true,
-      onDayCreate: function (dObj, dStr, fp, dayElem) {
-        // const date = dayElem.dateObj.toISOString().split('T')[0];
-        const adjustedDate = new Date(dayElem.dateObj);
-        adjustedDate.setDate(adjustedDate.getDate() + 1);
-        const date = adjustedDate.toISOString().split('T')[0];
-        const count = dateCounts[date];
-
-        if (count) {
-          const color = getColor(count);
-          dayElem.classList.add(color);
-
-          // Tooltip with product count
-          dayElem.setAttribute('title', `${count} product${count > 1 ? 's' : ''} created`);
-        }
+      const dateCounts = JSON.parse('{{ date_counts_json|safe }}');
+  
+      function getColor(count) {
+        if (count >= 6) return 'red';
+        if (count >= 3) return 'orange';
+        if (count >= 1) return 'lightgreen';
+        return '';
       }
+  
+      flatpickr("#calendar", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        onDayCreate: function (dObj, dStr, fp, dayElem) {
+          const date = dayElem.dateObj.toISOString().split('T')[0];
+          const count = dateCounts[date];
+          if (count) {
+            const color = getColor(count);
+            dayElem.classList.add(color);
+          }
+        }
+      });
     });
-  });
 
 
     const viewButtons = document.querySelectorAll('[data-view]');
@@ -251,122 +249,5 @@
         });
     });
   </script>
-
-
-<style>
-.product-filters {
-  display: flex;
-  flex-direction: column;
-  background: #fafafa;
-  padding: 1rem;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-}
-
-.product-filters select,
-.product-filters input.custom-input {
-  padding: 0.45rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: white;
-  font-size: 0.95rem;
-  min-width: 160px;
-}
-
-.product-filters .search-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.search-input {
-  flex: 1;
-  min-width: 180px;
-}
-
-.search-btn {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.search-btn:hover {
-  background: #0056b3;
-}
-
-.product-filters button[type="submit"],
-.reset-btn {
-  padding: 0.5rem 0.9rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.reset-btn {
-  background-color: #dc3545;
-}
-
-.product-filters button:hover {
-  opacity: 0.9;
-}
-
-.flatpickr-day.red {
-    background: #ff6961;
-    color: white;
-    border-radius: 50%;
-}
-.flatpickr-day.orange {
-    background: #fcbf49;
-    color: black;
-    border-radius: 50%;
-}
-.flatpickr-day.lightgreen {
-    background: #90ee90;
-    color: black;
-    border-radius: 50%;
-}
-.legend-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 4px;
-}
-
-/* Inline calendar legend styles */
-.calendar-legend {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-  font-size: 0.85rem;
-  padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
-  background-color: #fff;
-  border: 1px dashed #ddd;
-  border-radius: 10px;
-}
-
-.legend-dot {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 5px;
-  vertical-align: middle;
-}
-
-</style>
-
   
-  {% endblock content %}
-
-    
+  

@@ -15,7 +15,7 @@ from django.db.models.functions import TruncDate
 from django.db.models import Count
 import json
 from django.db.models import Q
-
+from django.utils import timezone
 
 
 
@@ -32,18 +32,7 @@ def dashboard(request):
     }
     return render(request, 'myadmin/dashboard.html', context)
 
-# def stock_management(request):
-#     products = Product.objects.all().order_by('-created_at')
-#     listed_products = products.filter(is_listed=True)
-#     products_in_stock = products.filter(in_stock=True)
-#     context = {
-#         'products': products[:20],
-#         'listed_products': listed_products,
-#         "products_in_stock": products_in_stock,
-#         }
-#     return render(request, 'myadmin/stock_management.html', context)
-
-def stock_management(request):
+def products_management(request):
     products = Product.objects.select_related('category').all()
     
 
@@ -93,7 +82,7 @@ def stock_management(request):
         'categories': Category.objects.all(),
         'brands': Product.objects.exclude(brand__isnull=True).values_list('brand', flat=True).distinct()
     }
-    return render(request, 'myadmin/stock_management.html', context)
+    return render(request, 'myadmin/products-management.html', context)
 
 
 def customers_management(request):
@@ -189,9 +178,14 @@ def product_list(request):
         .annotate(count=Count('id'))
         .order_by('-created_day')
     )
+    
     date_counts = {str(entry['created_day']): entry['count'] for entry in product_counts}
     
     view_mode = request.GET.get('view', 'table')
+    
+    # if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    #     html = render_to_string('myadmin/partials/product-table-body.html', {'products': products})
+    #     return JsonResponse({'html': html})
 
     context = {
         'products': products,
