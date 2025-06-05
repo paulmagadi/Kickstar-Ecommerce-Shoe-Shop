@@ -65,8 +65,8 @@ class UserProfileImageForm(forms.ModelForm):
 
 
 class UpdatedBillingAddressForm(forms.ModelForm):
-    full_name = forms.CharField(disabled=True)  # Optional: disable editing
-    email = forms.EmailField(disabled=True)     # Optional: disable editing
+    full_name = forms.CharField(disabled=True)  
+    email = forms.EmailField(disabled=True)     
     phone = forms.CharField()
     address1 = forms.CharField()
     address2 = forms.CharField(required=False)
